@@ -19,7 +19,7 @@ class fileInfo:
     def save(self):
         try:
             tempvar=self.fileName.split(".")
-            textFile = open(f"files/{self.fileName}+{self.timeStamp}.{tempvar[len(tempvar-1)]}", "a")
+            textFile = open(f"{self.fileName}+{self.timeStamp}.{tempvar[len(tempvar-1)]}", "a")
             #{tempvar[len(tempvar-1)]} made to get exact file type(format)
             textFile.write("FLAG: "+self.flag+"\n\n\n"+self.contains)
             textFile.close()
@@ -49,7 +49,7 @@ class fileInfo:
         print(self.fileName)
         print(self.timeStamp)
         print(self.flag)
-        print(self.contains)
+        #print(self.contains)
         return 0
 
 
@@ -66,7 +66,7 @@ def getFlag(link):
     for n in range(len(filetext)):
         if ("{MBKS4.3}" in filetext[n]):
             flags.append(filetext[n])
-    print(flags)
+    #print(flags)
     return flags
 
 def getContains(link):
@@ -87,6 +87,7 @@ def getInfo(text, baseURL):
 
 def analyzeInfo(files):
     for i in range(len(files)):
+        files[i].printInfo()
         if files[i].flag:
             files[i].writeToLog()
             files[i].save()
@@ -94,20 +95,21 @@ def analyzeInfo(files):
                 f = open("flags.txt")
                 flags = [str(i) for i in f]
                 f.close()
+                for n in range(len(flags)):
+                    if files[i].flag in flags[n]:
+
+                        raise Exception(f"Flag {files[i].flag} already exist!")
             except Exception as e:
                 print(e)
                 return -1
-            for n in range(len(flags)):
-                if not files[i].flag in flags[n]:
-                    try:
-                        textFile = open(f"flags.txt", "a")
-                        textFile.write(files[i].flag)
-                        textFile.close()
-                    except Exception as e:
-                        print(e)
-                    files[i].send()
-                else:
-                    print(f"Flag {files[i].flag} already exist!")
+            try:
+                textFile = open(f"flags.txt", "a")
+                textFile.write(files[i].flag)
+                textFile.close()
+                files[i].send()
+            except Exception as e:
+                print(e)
+
     return 0
 
 
@@ -124,7 +126,7 @@ while True:
         if t>=period:
             token=getToken(tokenURL)
             accessURL=f"http://194.87.94.159/share/?token={token}"
-            #print(token,accessURL)
+            print(token,accessURL)
             r=requests.get(accessURL)
 
             analyzeInfo(getInfo(r.text,baseURL))
