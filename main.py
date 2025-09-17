@@ -2,17 +2,6 @@ import requests
 import datetime
 import time
 
-# Вам нужно найти минимум 35 из 50 своих флагов, сдать их и сохранить все файлы
-# (имена и содержимое, в которых они нашлись).
-# Чтобы безопасники ничего не заподозрили, каждый день (начиная с полуночи)
-# у вас есть 100 попыток отправить валидные флаги на
-# странице http://194.87.94.159/share/submit.php
-# Что нужно принести на защиту:
-# 1) Код, который вы использовали для сбора флагов (и понимать, что он делает и как работает)
-# 2) Список найденных флагов
-# 3) Файлы, в которых найдены флаги
-# 4) Отчёт о работе, где вы своими словами расскажете, как решали задачу.
-
 #TODO:
 #написать функцию для получения обновляемого токена
 #{MBKS4.3}
@@ -50,7 +39,10 @@ class fileInfo:
         return 0
 
     def send(self):
-        pass
+        requests.post(submitURL, data={
+            "brigade": "4.3",
+            "flag": self.flag
+        })
 
     def printInfo(self):
         print(self.fileLink)
@@ -81,27 +73,47 @@ def getContains(link):
     return ((requests.get(link)).text)
 
 def getInfo(text, baseURL):
-    links=[]
-    names=[]
     files=[]
     text = text.split('\n')
+    timeStamp = '{:%Y_%b_%d_%H_%M_%S_%f}'.format(datetime.datetime.now())
     for i in range(1,len(text)):
         if ("<td>" and "</td>" in text[i]) and ("." in text[i]) \
                 and ("<a href=\"" in text[i]) and ("index.php" not in text[i]) and (".submit.php.swp" not in text[i]):
-            links.append(baseURL + "/" + ((text[i].split("\""))[1]))
-            names.append((text[i-1].split("<td>"))[1].split("</td>")[0])
+            link=baseURL + "/" + ((text[i].split("\""))[1])
+            name=(text[i-1].split("<td>"))[1].split("</td>")[0]
+            files.append(fileInfo(link,name,timeStamp,getFlag(link),getContains(link)))
 
-    timeStamp = '{:%Y_%b_%d_%H_%M_%S_%f}'.format(datetime.datetime.now())
-    for i in range(len(links)):
-        files.append(fileInfo(links[i],names[i],timeStamp,getFlag(links[i]),getContains(links[i])))
+    return files
+
+def analyzeInfo(files):
     for i in range(len(files)):
         if files[i].flag:
             files[i].writeToLog()
             files[i].save()
+            try:
+                f = open("flags.txt")
+                flags = [str(i) for i in f]
+                f.close()
+            except Exception as e:
+                print(e)
+                return -1
+            for n in range(len(flags)):
+                if not files[i].flag in flags[n]:
+                    try:
+                        textFile = open(f"flags.txt", "a")
+                        textFile.write(files[i].flag)
+                        textFile.close()
+                    except Exception as e:
+                        print(e)
+                    files[i].send()
+                else:
+                    print(f"Flag {files[i].flag} already exist!")
     return 0
+
 
 baseURL="http://194.87.94.159/share"
 tokenURL="http://194.87.94.159/share/token.php"
+submitURL="http://194.87.94.159/share/submit.php"
 period=25
 t=0
 while True:
@@ -115,7 +127,8 @@ while True:
             #print(token,accessURL)
             r=requests.get(accessURL)
 
-            getInfo(r.text,baseURL)
+            analyzeInfo(getInfo(r.text,baseURL))
+
             t=0
     except Exception as e:
         print(e)
