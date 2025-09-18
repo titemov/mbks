@@ -42,10 +42,11 @@ class fileInfo:
         return 0
 
     def send(self):
-        requests.post(submitURL, data={
-            "brigade": "4.3",
-            "flag": self.flag
-        })
+        for i in range(len(self.flag)):
+            requests.post(submitURL, data={
+                "brigade": "4.3",
+                "flag": self.flag[i]
+            })
 
     def printInfo(self):
         print(self.fileLink)
@@ -94,23 +95,22 @@ def analyzeInfo(files):
         files[i].printInfo()
         if files[i].flag:
             files[i].writeToLog()
-            files[i].save()
             try:
-                f = open("flags.txt")
+                f = open("flags.txt","ra")
                 flags = [str(i) for i in f]
                 f.close()
                 for n in range(len(flags)):
                     for m in range(len(files[i].flag)):
+                        alreadyFound=False
                         if (files[i].flag)[m] in flags[n]:
-                            raise Exception(f"Flag {files[i].flag} already exist!")
-            except Exception as e:
-                print(e)
-            try:
-                textFile = open(f"flags.txt", "a")
-                for n in range(len(files[i].flag)):
-                    textFile.write((files[i].flag)[n])
-                textFile.close()
-                files[i].send()
+                            alreadyFound=True
+                if not alreadyFound:
+                    textFile = open(f"flags.txt", "a")
+                    for n in range(len(files[i].flag)):
+                        textFile.write((files[i].flag)[n])
+                    textFile.close()
+                    files[i].send()
+                    files[i].save()
             except Exception as e:
                 print(e)
     return 0
