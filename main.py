@@ -47,6 +47,7 @@ class fileInfo:
                 "brigade": "4.3",
                 "flag": self.flag[i]
             })
+        return 0
 
     def printInfo(self):
         print(self.fileLink)
@@ -91,28 +92,39 @@ def getInfo(text, baseURL):
     return files
 
 def analyzeInfo(files):
+    #if file have flag
+    #   try to open file as read
+    #   error? create a file and write flag(s) in it
+    #   no error? check if flag is in file
     for i in range(len(files)):
         files[i].printInfo()
         if files[i].flag:
             files[i].writeToLog()
             try:
-                f = open("flags.txt","ra")
+                f = open("flags.txt", "r")
                 flags = [str(i) for i in f]
+                if not flags: raise OSError #(!)
                 f.close()
-                for n in range(len(flags)):
-                    for m in range(len(files[i].flag)):
-                        alreadyFound=False
-                        if (files[i].flag)[m] in flags[n]:
-                            alreadyFound=True
-                if not alreadyFound:
-                    textFile = open(f"flags.txt", "a")
-                    for n in range(len(files[i].flag)):
-                        textFile.write((files[i].flag)[n])
-                    textFile.close()
-                    files[i].send()
-                    files[i].save()
-            except Exception as e:
+                for n in range(len(files[i].flag)):
+                    alreadyFound = False
+                    for m in range(len(flags)):
+                        if (files[i].flag)[n] in flags[m]:
+                            alreadyFound = True
+                    if not alreadyFound:
+                        textFile = open("flags.txt", "a")
+                        for m in range(len(files[i].flag)):
+                            textFile.write((files[i].flag)[m])
+                        textFile.close()
+                        files[i].send()
+                        files[i].save()
+            except OSError as e:
                 print(e)
+                f = open("flags.txt", "w")
+                for n in range(len(files[i].flag)):
+                    f.write((files[i].flag)[n])
+                files[i].send()
+                files[i].save()
+                f.close()
     return 0
 
 
