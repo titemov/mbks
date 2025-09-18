@@ -19,7 +19,7 @@ class fileInfo:
     def save(self):
         try:
             tempvar=self.fileName.split(".")
-            textFile = open(f"{self.fileName}+{self.timeStamp}.{tempvar[len(tempvar-1)]}", "a")
+            textFile = open(f"{self.fileName}+{self.timeStamp}.{tempvar[len(tempvar)-1]}", "a")
             #{tempvar[len(tempvar-1)]} made to get exact file type(format)
             textFile.write("FLAG: "+self.flag+"\n\n\n"+self.contains)
             textFile.close()
@@ -50,6 +50,7 @@ class fileInfo:
         print(self.timeStamp)
         print(self.flag)
         #print(self.contains)
+        print(" ")
         return 0
 
 
@@ -101,7 +102,6 @@ def analyzeInfo(files):
                         raise Exception(f"Flag {files[i].flag} already exist!")
             except Exception as e:
                 print(e)
-                return -1
             try:
                 textFile = open(f"flags.txt", "a")
                 textFile.write(files[i].flag)
