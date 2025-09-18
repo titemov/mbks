@@ -1,6 +1,7 @@
 import requests
 import datetime
 import time
+from logging import getLogger, StreamHandler, FileHandler, Formatter
 
 #TODO:
 #написать функцию для получения обновляемого токена
@@ -19,7 +20,7 @@ class fileInfo:
     def save(self):
         try:
             tempvar=self.fileName.split(".")
-            textFile = open(f"{self.fileName}+{self.timeStamp}.{tempvar[len(tempvar)-1]}", "a")
+            textFile = open(f"{self.fileName}_{self.timeStamp}.{tempvar[len(tempvar)-1]}", "a")
             #{tempvar[len(tempvar-1)]} made to get exact file type(format)
             for i in range(len(self.flag)):
                 textFile.write("FLAG: " + self.flag[i]+"\n")
@@ -54,7 +55,6 @@ class fileInfo:
         print(self.fileName)
         print(self.timeStamp)
         print(self.flag)
-        #print(self.contains)
         print(" ")
         return 0
 
@@ -65,15 +65,19 @@ def getToken(url):
     return token
 
 def getFlag(link):
-    flags = []
-    r = requests.get(link)
-    # print(r.text)
-    filetext = (r.text).split("\n")
-    for n in range(len(filetext)):
-        if ("{MBKS4.3}" in filetext[n]):
-            flags.append(filetext[n])
-    #print(flags)
-    return flags
+    try:
+        flags = []
+        r = requests.get(link)
+        # print(r.text)
+        filetext = (r.text).split("\n")
+        for n in range(len(filetext)):
+            if ("{MBKS4.3}" in filetext[n]):
+                flags.append(filetext[n])
+        #print(flags)
+        return flags
+    except Exception as e:
+        print(e)
+        return -1
 
 def getContains(link):
     return ((requests.get(link)).text)
@@ -87,7 +91,9 @@ def getInfo(text, baseURL):
                 and ("<a href=\"" in text[i]) and ("index.php" not in text[i]) and (".submit.php.swp" not in text[i]):
             link=baseURL + "/" + ((text[i].split("\""))[1])
             name=(text[i-1].split("<td>"))[1].split("</td>")[0]
-            files.append(fileInfo(link,name,timeStamp,getFlag(link),getContains(link)))
+            flags=getFlag(link)
+            if flags==-1: flags=[]
+            files.append(fileInfo(link,name,timeStamp,flags,getContains(link)))
 
     return files
 
@@ -113,7 +119,7 @@ def analyzeInfo(files):
                     if not alreadyFound:
                         textFile = open("flags.txt", "a")
                         for m in range(len(files[i].flag)):
-                            textFile.write((files[i].flag)[m])
+                            textFile.write((files[i].flag)[m]+"\n")
                         textFile.close()
                         files[i].send()
                         files[i].save()
@@ -121,7 +127,7 @@ def analyzeInfo(files):
                 print(e)
                 f = open("flags.txt", "w")
                 for n in range(len(files[i].flag)):
-                    f.write((files[i].flag)[n])
+                    f.write((files[i].flag)[n]+"\n")
                 files[i].send()
                 files[i].save()
                 f.close()
