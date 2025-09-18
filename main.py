@@ -21,7 +21,9 @@ class fileInfo:
             tempvar=self.fileName.split(".")
             textFile = open(f"{self.fileName}+{self.timeStamp}.{tempvar[len(tempvar)-1]}", "a")
             #{tempvar[len(tempvar-1)]} made to get exact file type(format)
-            textFile.write("FLAG: "+self.flag+"\n\n\n"+self.contains)
+            for i in range(len(self.flag)):
+                textFile.write("FLAG: " + self.flag[i]+"\n")
+            textFile.write("\n\n\n"+self.contains)
             textFile.close()
         except Exception as e:
              print(e)
@@ -31,7 +33,8 @@ class fileInfo:
             textFile = open(f"log.txt", "a")
             textFile.write(f"timestamp: {self.timeStamp}"+"\n")
             textFile.write(f"file name: {self.fileName}" + "\n")
-            textFile.write(f"flag: {self.flag}" + "\n")
+            for i in range(len(self.flag)):
+                textFile.write(f"flag: {self.flag[i]}" + "\n")
             textFile.write("\n")
             textFile.close()
         except Exception as e:
@@ -97,19 +100,19 @@ def analyzeInfo(files):
                 flags = [str(i) for i in f]
                 f.close()
                 for n in range(len(flags)):
-                    if files[i].flag in flags[n]:
-
-                        raise Exception(f"Flag {files[i].flag} already exist!")
+                    for m in range(len(files[i].flag)):
+                        if (files[i].flag)[m] in flags[n]:
+                            raise Exception(f"Flag {files[i].flag} already exist!")
             except Exception as e:
                 print(e)
             try:
                 textFile = open(f"flags.txt", "a")
-                textFile.write(files[i].flag)
+                for n in range(len(files[i].flag)):
+                    textFile.write((files[i].flag)[n])
                 textFile.close()
                 files[i].send()
             except Exception as e:
                 print(e)
-
     return 0
 
 
@@ -124,9 +127,7 @@ while True:
         t += 1
         print(t)
         if t>=period:
-            token=getToken(tokenURL)
-            accessURL=f"http://194.87.94.159/share/?token={token}"
-            print(token,accessURL)
+            accessURL=f"http://194.87.94.159/share/?token={getToken(tokenURL)}"
             r=requests.get(accessURL)
 
             analyzeInfo(getInfo(r.text,baseURL))
