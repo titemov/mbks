@@ -1,0 +1,364 @@
+timestamp: 2025_Sep_18_22_14_40_926014
+file name: табель_учета_рабочего_времени_2025-09.csv
+flag: {MBKS4.3}bleed-worm-flux
+
+timestamp: 2025_Sep_18_22_54_22_303568
+file name: expense_claim_form_jdoe.pdf
+flag: {MBKS4.3}frost-lash-pulse
+
+timestamp: 2025_Sep_18_22_55_09_470726
+file name: expense_claim_form_jdoe.pdf
+flag: {MBKS4.3}frost-lash-pulse
+
+timestamp: 2025_Sep_19_01_21_40_634947
+file name: meeting_agenda_2025-09-09.docx
+flag: {MBKS4.3}bleed-worm-flux
+
+timestamp: 2025_Sep_19_01_59_34_260163
+file name: notes_random_2025-09-08.txt
+flag: {MBKS4.3}obscura-thread-vice
+
+timestamp: 2025_Sep_19_02_15_16_499649
+file name: expense_claim_form_jdoe.pdf
+flag: {MBKS4.3}swarm-mangle-vector
+
+timestamp: 2025_Sep_19_02_15_55_189312
+file name: expense_claim_form_jdoe.pdf
+flag: {MBKS4.3}swarm-mangle-vector
+
+timestamp: 2025_Sep_19_02_23_05_610383
+file name: служебная_записка_отдел_it_2025-09-08.pdf
+flag: {MBKS4.3}thread-bomb-crash
+
+timestamp: 2025_Sep_19_02_23_44_235551
+file name: служебная_записка_отдел_it_2025-09-08.pdf
+flag: {MBKS4.3}thread-bomb-crash
+
+timestamp: 2025_Sep_19_03_10_19_832271
+file name: archive-zzz-untitled.zip
+flag: {MBKS4.3}link-shard-blight
+
+timestamp: 2025_Sep_19_03_10_58_538560
+file name: archive-zzz-untitled.zip
+flag: {MBKS4.3}link-shard-blight
+
+timestamp: 2025_Sep_19_06_30_05_198178
+file name: техническое_задание_v2_2025-09-05.docx
+flag: {MBKS4.3}quantum-blast-warp
+
+timestamp: 2025_Sep_19_06_30_44_625583
+file name: техническое_задание_v2_2025-09-05.docx
+flag: {MBKS4.3}quantum-blast-warp
+
+timestamp: 2025_Sep_19_06_35_22_844153
+file name: tmp_userdata_02.xml
+flag: {MBKS4.3}burst-frost-dark
+
+timestamp: 2025_Sep_19_06_36_02_278104
+file name: tmp_userdata_02.xml
+flag: {MBKS4.3}burst-frost-dark
+
+timestamp: 2025_Sep_19_11_09_42_674436
+file name: data_fragment_001.part
+flag: {MBKS4.3}swarm-mangle-vector
+
+timestamp: 2025_Sep_19_11_56_17_353662
+file name: дневной_отчет_2025-09-08.docx
+flag: {MBKS4.3}sync-frost-night-fall
+
+timestamp: 2025_Sep_19_11_56_56_600973
+file name: дневной_отчет_2025-09-08.docx
+flag: {MBKS4.3}sync-frost-night-fall
+
+timestamp: 2025_Sep_19_14_42_02_437480
+file name: training_schedule_autumn2025.docx
+flag: {MBKS4.3}snare-code-lash
+
+timestamp: 2025_Sep_19_16_12_55_056259
+file name: run_0825_14h32m.log
+flag: {MBKS4.3}zero-day-bleed-run
+
+timestamp: 2025_Sep_19_17_25_25_005354
+file name: коммерческое_предложение_klient_a_2025-09.pdf
+flag: {MBKS4.3}umbra-venom-malware
+
+timestamp: 2025_Sep_19_18_06_44_985700
+file name: diary_2025-09-08_secret.txt
+flag: {MBKS4.3}quantum-blast-warp
+
+timestamp: 2025_Sep_19_18_08_41_488285
+file name: meeting_agenda_2025-09-09.docx
+flag: {MBKS4.3}sync-frost-night-fall
+
+timestamp: 2025_Sep_19_18_19_33_172652
+file name: cache_index_v2.db
+flag: {MBKS4.3}blight-lash-deep
+
+timestamp: 2025_Sep_19_21_51_44_918521
+file name: diary_2025-09-08_secret.txt
+flag: {MBKS4.3}loop-surge-venom
+
+timestamp: 2025_Sep_19_22_51_28_520213
+file name: nfo_junk_8f21xz9a.txt
+flag: {MBKS4.3}lash-silent-trap
+
+timestamp: 2025_Sep_19_22_52_07_877594
+file name: nfo_junk_8f21xz9a.txt
+flag: {MBKS4.3}lash-silent-trap
+
+timestamp: 2025_Sep_19_23_36_27_134196
+file name: 8e29d1bbf77e4a23bd4a7f01a8a.json
+flag: {MBKS4.3}dark-drive-thread
+
+timestamp: 2025_Sep_19_23_37_07_008787
+file name: 8e29d1bbf77e4a23bd4a7f01a8a.json
+flag: {MBKS4.3}dark-drive-thread
+
+timestamp: 2025_Sep_20_06_32_14_964037
+file name: screenshot_2025-09-09_14-32-55.png
+flag: {MBKS4.3}jump-night-fall-worm
+
+timestamp: 2025_Sep_20_06_32_53_663220
+file name: screenshot_2025-09-09_14-32-55.png
+flag: {MBKS4.3}jump-night-fall-worm
+
+timestamp: 2025_Sep_20_06_45_13_293425
+file name: music_playlist_test.m3u
+flag: {MBKS4.3}venom-blight-pulse
+
+timestamp: 2025_Sep_20_06_45_52_724784
+file name: music_playlist_test.m3u
+flag: {MBKS4.3}venom-blight-pulse
+
+timestamp: 2025_Sep_20_11_02_34_933329
+file name: error###trace###.log
+flag: {MBKS4.3}snare-call-crypto
+
+timestamp: 2025_Sep_20_11_39_33_181552
+file name: browser_history_copy_2025-09-06.sqlite
+flag: {MBKS4.3}jump-night-fall-worm
+
+timestamp: 2025_Sep_20_12_46_33_568536
+file name: 8e29d1bbf77e4a23bd4a7f01a8a.json
+flag: {MBKS4.3}exploit-quantum-razor
+
+timestamp: 2025_Sep_20_12_47_10_409037
+file name: 8e29d1bbf77e4a23bd4a7f01a8a.json
+flag: {MBKS4.3}exploit-quantum-razor
+
+timestamp: 2025_Sep_20_13_11_33_792278
+file name: sys_patch_old.0001.bak
+flag: {MBKS4.3}venom-blight-pulse
+
+timestamp: 2025_Sep_20_13_40_13_329770
+file name: product_roadmap_q4_2025.xlsx
+flag: {MBKS4.3}bleed-dark-mangle
+
+timestamp: 2025_Sep_20_13_40_52_668281
+file name: product_roadmap_q4_2025.xlsx
+flag: {MBKS4.3}bleed-dark-mangle
+
+timestamp: 2025_Sep_20_16_01_20_328032
+file name: client_call_summary_2025-09-07.txt
+flag: {MBKS4.3}burst-frost-dark
+
+timestamp: 2025_Sep_20_16_01_59_200936
+file name: client_call_summary_2025-09-07.txt
+flag: {MBKS4.3}burst-frost-dark
+
+timestamp: 2025_Sep_20_18_52_34_433196
+file name: financial_report_q3_2025.xlsx
+flag: {MBKS4.3}bleed-dark-mangle
+
+timestamp: 2025_Sep_20_19_47_23_659005
+file name: random_notes_journal.md
+flag: {MBKS4.3}nexus-rush-overclock
+
+timestamp: 2025_Sep_20_19_48_02_487239
+file name: random_notes_journal.md
+flag: {MBKS4.3}nexus-rush-overclock
+
+timestamp: 2025_Sep_20_21_08_20_240988
+file name: sys_event_dump_2025-09-09.log
+flag: {MBKS4.3}corrupt-scorch-venom
+
+timestamp: 2025_Sep_20_21_08_59_930298
+file name: sys_event_dump_2025-09-09.log
+flag: {MBKS4.3}corrupt-scorch-venom
+
+timestamp: 2025_Sep_21_02_01_32_215705
+file name: draft_text_untitled1.txt
+flag: {MBKS4.3}worm-breach-shell
+
+timestamp: 2025_Sep_21_02_02_11_638924
+file name: draft_text_untitled1.txt
+flag: {MBKS4.3}worm-breach-shell
+
+timestamp: 2025_Sep_21_05_10_34_662474
+file name: oldcfg_v1.1.1-.bak
+flag: {MBKS4.3}swarm-mangle-vector
+
+timestamp: 2025_Sep_21_05_19_07_307359
+file name: обновление_политики_hr_v1.docx
+flag: {MBKS4.3}logic-bypass-core
+
+timestamp: 2025_Sep_21_05_19_46_881391
+file name: обновление_политики_hr_v1.docx
+flag: {MBKS4.3}logic-bypass-core
+
+timestamp: 2025_Sep_21_08_28_21_191979
+file name: еженедельный_отчет_sales_team_2025-09-07.docx
+flag: {MBKS4.3}logic-bypass-core
+
+timestamp: 2025_Sep_21_08_43_31_046397
+file name: archive_old_docs.zip
+flag: {MBKS4.3}raid-rogue-malware
+
+timestamp: 2025_Sep_21_11_30_13_423641
+file name: xx_tmp_49234xx.sys
+flag: {MBKS4.3}wave-link-trap
+
+timestamp: 2025_Sep_21_11_30_52_114034
+file name: xx_tmp_49234xx.sys
+flag: {MBKS4.3}wave-link-trap
+
+timestamp: 2025_Sep_21_11_44_45_107592
+file name: debug_trace_0007.log
+flag: {MBKS4.3}shift-phantom-shock
+
+timestamp: 2025_Sep_21_13_55_48_250375
+file name: data_fragment_001.part
+flag: {MBKS4.3}frost-inject-shift
+
+timestamp: 2025_Sep_21_15_09_42_179756
+file name: notes_random_2025-09-08.txt
+flag: {MBKS4.3}burst-frost-dark
+
+timestamp: 2025_Sep_21_15_13_44_217190
+file name: diary_2025-09-08_secret.txt
+flag: {MBKS4.3}wipe-malware-logic
+
+timestamp: 2025_Sep_21_16_01_41_497906
+file name: error_report_0925-07.log
+flag: {MBKS4.3}logic-breach-ghost
+
+timestamp: 2025_Sep_21_16_02_21_402668
+file name: random_notes_journal.md
+flag: {MBKS4.3}umbra-venom-malware
+
+timestamp: 2025_Sep_21_16_03_00_963897
+file name: random_notes_journal.md
+flag: {MBKS4.3}umbra-venom-malware
+
+timestamp: 2025_Sep_21_18_04_21_471962
+file name: uncategorized_09-2025.dir
+flag: {MBKS4.3}sync-frost-night-fall
+
+timestamp: 2025_Sep_21_18_05_01_124199
+file name: uncategorized_09-2025.dir
+flag: {MBKS4.3}sync-frost-night-fall
+
+timestamp: 2025_Sep_21_20_09_41_436207
+file name: meeting_notes_2025-09-08.txt
+flag: {MBKS4.3}crypt-fade-shift
+
+timestamp: 2025_Sep_21_20_10_20_191192
+file name: бюджет_обзор_q3_2025.docx
+flag: {MBKS4.3}chaos-burst-wave
+
+timestamp: 2025_Sep_21_20_10_58_962598
+file name: бюджет_обзор_q3_2025.docx
+flag: {MBKS4.3}chaos-burst-wave
+
+timestamp: 2025_Sep_21_20_27_25_448627
+file name: random_notes_journal.md
+flag: {MBKS4.3}quantum-blast-warp
+
+timestamp: 2025_Sep_21_20_28_04_161302
+file name: random_notes_journal.md
+flag: {MBKS4.3}quantum-blast-warp
+
+timestamp: 2025_Sep_21_23_17_41_755599
+file name: .#autosave_session.cfg
+flag: {MBKS4.3}exploit-blight-static
+
+timestamp: 2025_Sep_21_23_19_37_935165
+file name: net_scan_output_2025-09-07.txt
+flag: {MBKS4.3}logic-breach-ghost
+
+timestamp: 2025_Sep_22_00_09_31_202106
+file name: archive_old_docs.zip
+flag: {MBKS4.3}flux-drive-null
+
+timestamp: 2025_Sep_22_00_10_10_843484
+file name: archive_old_docs.zip
+flag: {MBKS4.3}flux-drive-null
+
+timestamp: 2025_Sep_22_01_42_50_769208
+file name: ._hiddenfile.store
+flag: {MBKS4.3}wipe-malware-logic
+
+timestamp: 2025_Sep_22_05_38_27_154240
+file name: clipboard_history_2025-09.json
+flag: {MBKS4.3}snare-code-lash
+
+timestamp: 2025_Sep_22_05_39_06_599354
+file name: clipboard_history_2025-09.json
+flag: {MBKS4.3}snare-code-lash
+
+timestamp: 2025_Sep_22_07_13_16_442838
+file name: product_roadmap_q4_2025.xlsx
+flag: {MBKS4.3}wipe-frost-cipher
+
+timestamp: 2025_Sep_22_07_13_54_250904
+file name: product_roadmap_q4_2025.xlsx
+flag: {MBKS4.3}wipe-frost-cipher
+
+timestamp: 2025_Sep_22_07_30_22_220830
+file name: ежедневный_журнал_посещаемости_2025-09-08.csv
+flag: {MBKS4.3}inject-run-scar
+
+timestamp: 2025_Sep_22_07_31_00_709242
+file name: ежедневный_журнал_посещаемости_2025-09-08.csv
+flag: {MBKS4.3}inject-run-scar
+
+timestamp: 2025_Sep_22_08_28_29_432477
+file name: дневной_отчет_2025-09-08.docx
+flag: {MBKS4.3}crypt-fade-shift
+
+timestamp: 2025_Sep_22_09_24_20_707947
+file name: performance_review_template_2025.docx
+flag: {MBKS4.3}logic-bypass-core
+
+timestamp: 2025_Sep_22_09_25_00_280562
+file name: performance_review_template_2025.docx
+flag: {MBKS4.3}logic-bypass-core
+
+timestamp: 2025_Sep_22_09_29_38_546450
+file name: notes_random_2025-09-08.txt
+flag: {MBKS4.3}dark-drive-thread
+
+timestamp: 2025_Sep_22_10_57_17_538923
+file name: tmp_userdata_02.xml
+flag: {MBKS4.3}flux-drive-null
+
+timestamp: 2025_Sep_22_10_57_57_343243
+file name: tmp_userdata_02.xml
+flag: {MBKS4.3}flux-drive-null
+
+timestamp: 2025_Sep_22_11_56_22_131864
+file name: screenshot_2025-09-09_14-32-55.png
+flag: {MBKS4.3}snare-call-crypto
+
+timestamp: 2025_Sep_22_11_57_03_032150
+file name: screenshot_2025-09-09_14-32-55.png
+flag: {MBKS4.3}snare-call-crypto
+
+timestamp: 2025_Sep_22_12_10_15_815242
+file name: sys_event_dump_2025-09-09.log
+flag: {MBKS4.3}bleed-dark-mangle
+
+timestamp: 2025_Sep_22_12_10_55_968308
+file name: sys_event_dump_2025-09-09.log
+flag: {MBKS4.3}bleed-dark-mangle
+
