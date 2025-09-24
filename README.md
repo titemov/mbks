@@ -1,2 +1,2 @@
-# mbks1
+# mbks
 MBKS ETU 2025
