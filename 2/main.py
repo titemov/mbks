@@ -18,6 +18,8 @@
 # ivan3 Audit_Report.pdf +
 # bob ivanovich dylan Audit_Report.pdf -
 #
+# Каждая строка содержит одно имя, один файл и один квалификатор доступа
+#
 # Нужно будет настроить доступы и найти нарушителей. Времени мало, вы должны помочь Максиму.
 #
 # Задача: написать пользовательскую программу с понятным способом взаимодействия, которая проверит,
@@ -37,11 +39,64 @@ import datetime
 import time
 import json
 
+#TODO:
+#1) Сделать класс worker, содержащий информацию о имени пользователя, и словарь доступа к файлам вида {"+": [], "-":[]}
+#2) Сделать парсер txt файла, где имя может содержать пробелы, имя файла не может. Каждый аргумент разделен пробелом
+#3) Сделать функцию сравенения и выбора дальнейших действий:
+#   сравнить с полученным списком:
+#       если нет указанного в списке пользователя или файла нет в матрице -> предложить выбор (добавить/игнор ?)
+#       если неверно указан доступ к существующим файлам -> исправить полученный список, записать в changelog исправления.
+#           Вернуть список после всех исправлений и вернуть содержимое changelog (каждый запуск - новый changelog)
+#4) Написать функцию, которая печатает красивую ТАБЛИЦУ (матрицу) доступа: столбцы - имена файлов, строки - имена пользователей
+#
+class worker:
+    def __init__(self, name):
+        self.name=name
+        self.access={"+": [], "-": []}
+
+    def printInfo(self):
+        print("User name: "+self.name)
+        print("Access: "+self.access)
+        print(" ")
+        return 0
+
+
+def initWorker(data):
+    workers=[]
+    userNames=[]
+
+    for file in data:
+        for name in data[file]:
+            if name not in userNames:
+                userNames.append(name)
+                tempObj = worker(name)
+                if data[file][name]=="+":
+                    (tempObj.access)["+"].append(file)
+                else:
+                    (tempObj.access)["-"].append(file)
+                workers.append(tempObj)
+            else:
+                for i in range(len(workers)):
+                    if workers[i].name==name:
+                        if data[file][name]=="+":
+                            (workers[i].access)["+"].append(file)
+                        else:
+                            (workers[i].access)["-"].append(file)
+    return workers
+
 matrixURL="http://194.87.94.159/supersec/api.php?action=get"
 
 def getJSON(url):
-    return requests.get(url).text
+    return json.loads(requests.get(url).text)
 
-print(requests.get(matrixURL).text)
-print(json.loads(requests.get(matrixURL).text)["IT_Infrastructure.xlsx"])
-print(json.loads(requests.get(matrixURL).text)["IT_Infrastructure.xlsx"]["alice01"])
+#print(getJSON(matrixURL))
+data=getJSON(matrixURL)
+
+temp=initWorker(data)
+for i in range(len(temp)):
+    temp[i].printInfo()
+
+
+
+# print(json.loads(requests.get(matrixURL).text)["IT_Infrastructure.xlsx"])
+# print(json.loads(requests.get(matrixURL).text)["IT_Infrastructure.xlsx"]["alice01"]) # - value
