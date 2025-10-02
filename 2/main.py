@@ -40,9 +40,9 @@ import time
 import json
 
 #TODO:
-#1) Сделать класс worker, содержащий информацию о имени пользователя, и словарь доступа к файлам вида {"+": [], "-":[]}
-#2) Сделать парсер txt файла, где имя может содержать пробелы, имя файла не может. Каждый аргумент разделен пробелом
-#3) Сделать функцию сравенения и выбора дальнейших действий:
+#1)+Сделать класс worker, содержащий информацию о имени пользователя, и словарь доступа к файлам вида {"+": [], "-":[]}
+#2)+Сделать парсер txt файла, где имя может содержать пробелы, имя файла не может. Каждый аргумент разделен пробелом
+#3) Сделать функцию сравнения и выбора дальнейших действий:
 #   сравнить с полученным списком:
 #       если нет указанного в списке пользователя или файла нет в матрице -> предложить выбор (добавить/игнор ?)
 #       если неверно указан доступ к существующим файлам -> исправить полученный список, записать в changelog исправления.
@@ -55,11 +55,56 @@ class worker:
         self.access={"+": [], "-": []}
 
     def printInfo(self):
-        print("User name: "+self.name)
-        print("Access: "+self.access)
+        print("User name: ", self.name)
+        print("Access: ", self.access)
         print(" ")
         return 0
 
+def readCorrectList(path):
+    correctListWorkers = []
+    correctList = []
+    try:
+        f = open(path,"r")
+        correctList=[str(i) for i in f]
+        f.close()
+    except OSError as e:
+        print(e)
+        return 1
+
+    if not correctList: return 2
+
+    print(correctList)
+
+    for i in range(len(correctList)):
+        userNames=[]
+        temp=correctList[i].split(" ")
+        print(temp)
+        value = ((temp[(len(temp) - 1) - 0]).split("\n"))[0]
+        file = temp[(len(temp) - 1) - 1]
+        name=""
+        for n in range(len(temp)-2):
+            if n==(len(temp)-2):
+                name+=temp[n]
+            else:
+                name+=(temp[n]+" ")
+
+        if name not in userNames:
+            userNames.append(name)
+            tempObj=worker(name)
+            if value=="+":
+                tempObj.access["+"].append(file)
+            else:
+                tempObj.access["-"].append(file)
+            correctListWorkers.append(tempObj)
+        else:
+            for m in range(len(correctListWorkers)):
+                if correctListWorkers[m]==name:
+                    if value=="+":
+                        correctListWorkers[m].access["+"].append(file)
+                    else:
+                        correctListWorkers[m].access["-"].append(file)
+
+    return correctListWorkers
 
 def initWorker(data):
     workers=[]
@@ -84,6 +129,10 @@ def initWorker(data):
                             (workers[i].access)["-"].append(file)
     return workers
 
+def compareWorkers(correctListWorkers, workers):
+
+    return 0
+
 matrixURL="http://194.87.94.159/supersec/api.php?action=get"
 
 def getJSON(url):
@@ -92,11 +141,14 @@ def getJSON(url):
 #print(getJSON(matrixURL))
 data=getJSON(matrixURL)
 
-temp=initWorker(data)
-for i in range(len(temp)):
-    temp[i].printInfo()
+# temp=initWorker(data)
+# for i in range(len(temp)):
+#     temp[i].printInfo()
 
+a=readCorrectList("test.txt")
 
+for i in range(len(a)):
+    a[i].printInfo()
 
 # print(json.loads(requests.get(matrixURL).text)["IT_Infrastructure.xlsx"])
 # print(json.loads(requests.get(matrixURL).text)["IT_Infrastructure.xlsx"]["alice01"]) # - value
