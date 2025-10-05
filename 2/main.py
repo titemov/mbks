@@ -194,9 +194,19 @@ def compareWorkers(JSONWorkers, correctListWorkers):
 
                 if noRecord:
                     file = correctListWorkers[i].access[correctValue][0]
-                    (JSONWorkers[n].access[correctValue]).append(file)
-                    writeToChangelog(f"Name: {JSONWorkers[n].name}; File: {file}; Added to {correctValue}")
-                    send(JSONWorkers[n].name,file,correctValue)
+                    print(f"User \"{JSONWorkers[n].name}\" have no file with name \"{file}\" in matrix!")
+                    print("Choose action: (write a number)\n1) Add file \n2) Ignore")
+                    try:
+                        action = int(input())
+                    except Exception as e:
+                        print("Error:", e)
+                        action = 2
+                    if action == 1:
+                        (JSONWorkers[n].access[correctValue]).append(file)
+                        writeToChangelog(f"Name: {JSONWorkers[n].name}; File: {file}; Added to {correctValue}")
+                        send(JSONWorkers[n].name,file,correctValue)
+                    else:
+                        print("Ignored.")
 
     JSONNames = []
     for i in range(len(JSONWorkers)): JSONNames.append(JSONWorkers[i].name)
@@ -376,12 +386,18 @@ def changeUserAccess(objArray):
 matrix=[]
 correctList=[]
 
+
+
 matrixURL = "http://194.87.94.159/supersec/api.php?action=get"
-# print(getJSON(matrixURL))
-data = getJSON(matrixURL)
-matrix = readJSONList(data)
-correctList = readCorrectList("test.txt")
-matrix = compareWorkers(matrix, correctList)
+#print(getJSON(matrixURL))
+try:
+    data = getJSON(matrixURL)
+    matrix = readJSONList(data)
+    correctList = readCorrectList("test.txt")
+    matrix = compareWorkers(matrix, correctList)
+except Exception as e:
+    print(e)
+    exit(-1)
 
 while True:
     print("Choose action (1...4):")
@@ -398,6 +414,7 @@ while True:
         elif action==4:
             showLog("log.txt")
         elif action==0:
+            print("Exiting...")
             break
         else: raise Exception("Incorrect number given")
         input("Press \"Enter\" to continue...")
