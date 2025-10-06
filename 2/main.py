@@ -1,7 +1,6 @@
 import requests
 import datetime
 import json
-from json2table import convert
 from prettytable import PrettyTable
 table = PrettyTable()
 
@@ -47,7 +46,7 @@ def writeToChangelog(str):
 
 def showLog(path):
     try:
-        f = open("log.txt", "r")
+        f = open(path, "r")
         print("----- LOGS -----")
         for i in f:
             print(str(i), end="")
@@ -251,21 +250,21 @@ def compareWorkers(JSONWorkers, correctListWorkers):
     return JSONWorkers
 
 
-def printMatrix(matrix):
-    files = {}
-    for i in range(len(matrix)):
-        for n in range(len(matrix[i].access["+"])):
-            files[(matrix[i].access["+"])[n]] = {}
-        for n in range(len(matrix[i].access["-"])):
-            files[(matrix[i].access["-"])[n]] = {}
-
-    for i in range(len(matrix)):
-        for n in range(len(matrix[i].access["+"])):
-            files[(matrix[i].access["+"])[n]].update({matrix[i].name: "+"})
-        for n in range(len(matrix[i].access["-"])):
-            files[(matrix[i].access["-"])[n]].update({matrix[i].name: "-"})
-    #print(files)
-    return json.dumps(files, indent="\t")
+# def printMatrix(matrix):
+#     files = {}
+#     for i in range(len(matrix)):
+#         for n in range(len(matrix[i].access["+"])):
+#             files[(matrix[i].access["+"])[n]] = {}
+#         for n in range(len(matrix[i].access["-"])):
+#             files[(matrix[i].access["-"])[n]] = {}
+#
+#     for i in range(len(matrix)):
+#         for n in range(len(matrix[i].access["+"])):
+#             files[(matrix[i].access["+"])[n]].update({matrix[i].name: "+"})
+#         for n in range(len(matrix[i].access["-"])):
+#             files[(matrix[i].access["-"])[n]].update({matrix[i].name: "-"})
+#     #print(files)
+#     return json.dumps(files, indent="\t")
 
 
 def userAccesses(objArray):
@@ -418,11 +417,12 @@ def makeTable(data):
     for i in range(len(rows)):
         table.add_row(rows[i])
     #print(table)
-    timeStamp = '{:%Y_%b_%d_%H_%M_%S_%f}'.format(datetime.datetime.now())
+    #timeStamp = '{:%Y_%b_%d_%H_%M_%S_%f}'.format(datetime.datetime.now())
     try:
-        f=open(f"Matrix_corrected_{timeStamp}.txt","w")
+        f=open(f"Matrix_corrected.txt","w")
         f.write(str(table))
         f.close()
+        print(f"Matrix saved as Matrix_corrected.txt")
     except OSError as e:
         print(e)
         return
