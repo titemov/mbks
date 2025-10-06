@@ -1,6 +1,9 @@
 import requests
 import datetime
 import json
+from json2table import convert
+from prettytable import PrettyTable
+table = PrettyTable()
 
 # TODO:
 # 1)+Сделать класс worker, содержащий информацию о имени пользователя, и словарь доступа к файлам вида {"+": [], "-":[]}
@@ -383,10 +386,49 @@ def changeUserAccess(objArray):
         writeToChangelog(f"User: {user}; File: {file}; Now have \"{newValue}\" access")
     return
 
+def makeTable(data):
+    files=[]
+    files.append(" ")
+    userNames=[]
+    rows=[]
+    for i in range(len(data)):
+        userNames.append(data[i].name)
+    for i in range(len(data)):
+        for n in range(len(data[i].access["+"])):
+            if data[i].access["+"][n] not in files:
+                files.append(data[i].access["+"][n])
+        for n in range(len(data[i].access["-"])):
+            if data[i].access["-"][n] not in files:
+                files.append(data[i].access["-"][n])
+
+    for i in range(len(data)):
+        row=[]
+        row.append(data[i].name)
+        for n in range(1,len(files)):
+            if files[n] in (data[i].access["+"]):
+                row.append("+")
+            elif files[n] in (data[i].access["-"]):
+                row.append("-")
+            else:
+                row.append(" ")
+        rows.append(row)
+    #print(rows)
+
+    table.field_names=files
+    for i in range(len(rows)):
+        table.add_row(rows[i])
+    #print(table)
+    timeStamp = '{:%Y_%b_%d_%H_%M_%S_%f}'.format(datetime.datetime.now())
+    try:
+        f=open(f"Matrix_corrected_{timeStamp}.txt","w")
+        f.write(str(table))
+        f.close()
+    except OSError as e:
+        print(e)
+        return
+
 matrix=[]
 correctList=[]
-
-
 
 matrixURL = "http://194.87.94.159/supersec/api.php?action=get"
 #print(getJSON(matrixURL))
@@ -399,14 +441,14 @@ except Exception as e:
     print(e)
     exit(-1)
 
+
 while True:
     print("Choose action (1...4):")
     print("1) Show full matrix \n2) Show user accesses \n3) Change user-file access (manual) \n4) Show log \n0) Exit")
     try:
         action = int(input())
         if action==1:
-            print(printMatrix(matrix))
-            print(requests.get(matrixURL).text)
+            makeTable(matrix)
         elif action==2:
             print(userAccesses(matrix))
         elif action==3:
