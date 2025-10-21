@@ -1,0 +1,201 @@
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.stage.Stage;
+import javafx.scene.shape.Line;
+
+public class Interface extends Application {
+    /*
+    добавить messagebox на импорт/экспорт
+    */
+    @Override
+    public void start(Stage stage){
+
+        Group mainGroup = new Group();
+        Group buttonGroup = new Group();
+        final Stage[] secondWindowStage = new Stage[1];//костыль
+
+        Button addSubjectBtn = new Button("Add subject(s)");
+        addSubjectBtn.setLayoutX(10);
+        addSubjectBtn.setLayoutY(10);
+        addSubjectBtn.setPrefSize(120,15);
+        addSubjectBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    secondWindowStage[0].close();
+                } catch (Exception e) {
+                    System.out.println("No secondary window to close (Interface.java)");
+                }
+
+                Backend a = new Backend();
+                secondWindowStage[0] = a.add(0);//mode=0
+            }
+        });
+        buttonGroup.getChildren().add(addSubjectBtn);
+
+        Button addObjectBtn = new Button("Add object(s)");
+        addObjectBtn.setLayoutX(10);
+        addObjectBtn.setLayoutY(10+15+15);
+        addObjectBtn.setPrefSize(120,15);
+        addObjectBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    secondWindowStage[0].close();
+                } catch (Exception e) {
+                    System.out.println("No secondary window to close (Interface.java)");
+                }
+
+                Backend a = new Backend();
+                secondWindowStage[0] = a.add(1);//mode=1
+            }
+        });
+        buttonGroup.getChildren().add(addObjectBtn);
+
+        Button removeSubjectBtn = new Button("Remove subject");
+        removeSubjectBtn.setLayoutX(10+120+10);
+        removeSubjectBtn.setLayoutY(10);
+        removeSubjectBtn.setPrefSize(120,15);
+        removeSubjectBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    secondWindowStage[0].close();
+                } catch (Exception e) {
+                    System.out.println("No secondary window to close (Interface.java)");
+                }
+
+                Backend a = new Backend();
+                secondWindowStage[0] = a.remove(0);//mode=0
+            }
+        });
+        buttonGroup.getChildren().add(removeSubjectBtn);
+
+        Button removeObjectBtn = new Button("Remove object");
+        removeObjectBtn.setLayoutX(10+120+10);
+        removeObjectBtn.setLayoutY(10+15+15);
+        removeObjectBtn.setPrefSize(120,15);
+        removeObjectBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    secondWindowStage[0].close();
+                } catch (Exception e) {
+                    System.out.println("No secondary window to close (Interface.java)");
+                }
+
+                Backend a = new Backend();
+                secondWindowStage[0] = a.remove(1);//mode=1
+            }
+        });
+        buttonGroup.getChildren().add(removeObjectBtn);
+
+        Button changeAccessBtn = new Button("Change access");
+        changeAccessBtn.setLayoutX(10+120+10+120+10);
+        changeAccessBtn.setLayoutY(10);
+        changeAccessBtn.setPrefSize(120,15);
+        changeAccessBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                System.out.println(5);
+            }
+        });
+        buttonGroup.getChildren().add(changeAccessBtn);
+
+        Button showMatrixBtn = new Button("Show Matrix");
+        showMatrixBtn.setLayoutX(10+120+10+120+10);
+        showMatrixBtn.setLayoutY(10+15+15);
+        showMatrixBtn.setPrefSize(120,15);
+        showMatrixBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                System.out.println(6);
+            }
+        });
+        buttonGroup.getChildren().add(showMatrixBtn);
+
+        TextArea consoleTextArea = new TextArea();
+        consoleTextArea.setText(">>>");
+        consoleTextArea.setLayoutX(10);
+        consoleTextArea.setLayoutY(70);
+        consoleTextArea.setMinHeight(400);
+        consoleTextArea.setMaxHeight(400);
+        consoleTextArea.setMinWidth(650);
+        consoleTextArea.setMaxWidth(650);
+        //consoleTextArea.requestFocus();
+        consoleTextArea.setFont(Font.font("Consolas", 28));
+        consoleTextArea.end();
+        mainGroup.getChildren().add(consoleTextArea);
+
+        Button enterCommandBtn = new Button("Enter");
+        enterCommandBtn.setLayoutX(650+20);
+        enterCommandBtn.setLayoutY(70);
+        enterCommandBtn.setPrefSize(105,350);
+        enterCommandBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                System.out.println(7);
+            }
+        });
+        buttonGroup.getChildren().add(enterCommandBtn);
+
+        Button clearCLIBtn = new Button("Clear");
+        clearCLIBtn.setLayoutX(650+20);
+        clearCLIBtn.setLayoutY(420+5);
+        clearCLIBtn.setPrefSize(105,45);
+        clearCLIBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                consoleTextArea.setText(">>>");
+                consoleTextArea.requestFocus();
+                consoleTextArea.end();
+            }
+        });
+        buttonGroup.getChildren().add(clearCLIBtn);
+
+        Button exportMatrixBtn = new Button("Export matrix to file");
+        exportMatrixBtn.setLayoutX(10);
+        exportMatrixBtn.setLayoutY(500);
+        exportMatrixBtn.setPrefSize(150,15);
+        exportMatrixBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                System.out.println(8);
+            }
+        });
+        buttonGroup.getChildren().add(exportMatrixBtn);
+
+        Button importMatrixBtn = new Button("Import matrix from file");
+        importMatrixBtn.setLayoutX(175);
+        importMatrixBtn.setLayoutY(500);
+        importMatrixBtn.setPrefSize(150,15);
+        importMatrixBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                System.out.println(9);
+            }
+        });
+        buttonGroup.getChildren().add(importMatrixBtn);
+
+
+
+        mainGroup.getChildren().add(buttonGroup);
+        Scene scene = new Scene(mainGroup, Color.rgb(245,245,245));
+        stage.setScene(scene);
+        stage.setTitle("Admin");
+        stage.setWidth(800);
+        stage.setHeight(600);
+        stage.setResizable(false);
+        stage.show();
+    }
+
+    public static void show(){
+        Application.launch();
+    }
+}
