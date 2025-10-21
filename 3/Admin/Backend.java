@@ -12,8 +12,8 @@ import java.util.*;
 
 public class Backend extends Interface {
     //private String result="";
-    private final Matrix matrix = new Matrix();
-    private final FileNames allFileNames = new FileNames();
+    private static final Matrix matrix = new Matrix();
+    private static final FileNames allFileNames = new FileNames();
 
     private void addButtonHandler(int mode,TextField textField, Stage newStage){
         String text = textField.getText();
@@ -38,22 +38,26 @@ public class Backend extends Interface {
         if(mode==0) {//mode=0 from subject, mode=1 from object
             String[] splitted = removeDuplicates(temp.split(" "));
             for(int i=0;i<splitted.length;i++){
-                this.matrix.addEmployee(new Employee(splitted[i],null));
+                matrix.addEmployee(new Employee(splitted[i],null));
             }
             //
-            String[] abc = this.matrix.getAllNames();
+            String[] abc = matrix.getAllNames();
             for(int i=0;i< abc.length;i++){
                 System.out.println("Name: "+abc[i]);
             }
         }else{
             String[] splitted = removeDuplicates(temp.split("(?!^)"));
-            this.allFileNames.addFiles(splitted);
+            allFileNames.addFiles(splitted);
             //
             String[] abc = allFileNames.getAllFileNames();
             for(int i=0;i< abc.length;i++){
                 System.out.println("File: "+abc[i]);
             }
         }
+    }
+
+    private void removeButtonHandler(ComboBox choiceCB){
+        System.out.println(choiceCB.getValue());
     }
 
     public Stage add(int mode){
@@ -103,7 +107,9 @@ public class Backend extends Interface {
     }
 
     public Stage remove(int mode){
-        ObservableList<String> observableList = FXCollections.observableArrayList(Arrays.asList((this.matrix).getAllNames()));
+        //после выбора и нажатия "Remove" не закрывать окно, а просто указать, что именно было удалено.
+        // Почему нельзя удалять несколько сразу? потому что нет функции возврата (для предостережения в общем говоря)
+        ObservableList<String> observableList;
         Stage newStage = new Stage();
         newStage.setWidth(300);
         newStage.setHeight(100);
@@ -115,23 +121,23 @@ public class Backend extends Interface {
         if(mode==0) {//mode=0 from subject, mode=1 from object
             newStage.setTitle("Remove subject(s)");
             label.setText("Remove subject(s)");
-            //observableList = FXCollections.observableArrayList(Arrays.asList(this.matrix.getAllNames()));
+            observableList = FXCollections.observableArrayList(matrix.getAllNames());
         }else{
             newStage.setTitle("Remove object(s)");
             label.setText("Remove object(s)");
-            //observableList = FXCollections.observableArrayList(this.allFileNames.getAllFileNames());
+            observableList = FXCollections.observableArrayList(allFileNames.getAllFileNames());
         }
         group.getChildren().add(label);
 
-        System.out.println(this.matrix.matrixLength());
-        System.out.println((this.matrix.getAllNames())[0]);
+        System.out.println(matrix.matrixLength());
+        System.out.println((matrix.getAllNames())[0]);
 
-        ChoiceBox<String> chooseCB = new ChoiceBox<>(observableList);
-        chooseCB.setLayoutX(10);
-        chooseCB.setLayoutY(30);
-        chooseCB.minWidth(190);
-        chooseCB.maxWidth(190);
-        group.getChildren().add(chooseCB);
+        ComboBox<String> choiceCB = new ComboBox<>(observableList);
+        choiceCB.setLayoutX(10);
+        choiceCB.setLayoutY(30);
+        choiceCB.minWidth(190);
+        choiceCB.maxWidth(190);
+        group.getChildren().add(choiceCB);
 
 
         Button enterBtn = new Button("Remove");
@@ -142,7 +148,7 @@ public class Backend extends Interface {
         enterBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                System.out.println(chooseCB.getValue());
+                removeButtonHandler(choiceCB);
             }
         });
 
@@ -156,7 +162,7 @@ public class Backend extends Interface {
     }
 
     public Matrix getMatrix(){
-        return this.matrix;
+        return matrix;
     }
     public static int rng(int low, int high) {
         Random r = new Random();
