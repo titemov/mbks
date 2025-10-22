@@ -19,4 +19,7 @@ public class Employee {
         return this.name;
     }
 
+    public FileNames getFileNames(){
+        return this.fileNames;
+    }
 }

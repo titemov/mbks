@@ -33,8 +33,20 @@ public class Interface extends Application {
                     System.out.println("No secondary window to close (Interface.java)");
                 }
 
-                Backend a = new Backend();
-                secondWindowStage[0] = a.add(0);//mode=0
+                try {
+                    Backend a = new Backend();
+                    secondWindowStage[0] = a.add(0);//mode=0
+                }catch (Exception e){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error!");
+                    alert.setHeaderText("Error!");
+                    alert.setContentText(String.valueOf(e));
+                    alert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK.");
+                        }
+                    });
+                }
             }
         });
         buttonGroup.getChildren().add(addSubjectBtn);
@@ -52,8 +64,20 @@ public class Interface extends Application {
                     System.out.println("No secondary window to close (Interface.java)");
                 }
 
-                Backend a = new Backend();
-                secondWindowStage[0] = a.add(1);//mode=1
+                try {
+                    Backend a = new Backend();
+                    secondWindowStage[0] = a.add(1);//mode=1
+                }catch (Exception e){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error!");
+                    alert.setHeaderText("Error!");
+                    alert.setContentText(String.valueOf(e));
+                    alert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK.");
+                        }
+                    });
+                }
             }
         });
         buttonGroup.getChildren().add(addObjectBtn);
@@ -71,8 +95,20 @@ public class Interface extends Application {
                     System.out.println("No secondary window to close (Interface.java)");
                 }
 
-                Backend a = new Backend();
-                secondWindowStage[0] = a.remove(0);//mode=0
+                try {
+                    Backend a = new Backend();
+                    secondWindowStage[0] = a.remove(0);//mode=0
+                }catch (Exception e){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error!");
+                    alert.setHeaderText("Error!");
+                    alert.setContentText(String.valueOf(e));
+                    alert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK.");
+                        }
+                    });
+                }
             }
         });
         buttonGroup.getChildren().add(removeSubjectBtn);
@@ -90,8 +126,20 @@ public class Interface extends Application {
                     System.out.println("No secondary window to close (Interface.java)");
                 }
 
-                Backend a = new Backend();
-                secondWindowStage[0] = a.remove(1);//mode=1
+                try {
+                    Backend a = new Backend();
+                    secondWindowStage[0] = a.remove(1);//mode=1
+                }catch (Exception e){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error!");
+                    alert.setHeaderText("Error!");
+                    alert.setContentText(String.valueOf(e));
+                    alert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK.");
+                        }
+                    });
+                }
             }
         });
         buttonGroup.getChildren().add(removeObjectBtn);
@@ -103,7 +151,8 @@ public class Interface extends Application {
         changeAccessBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                System.out.println(5);
+                Backend a = new Backend();
+                secondWindowStage[0] = a.changeAccess();
             }
         });
         buttonGroup.getChildren().add(changeAccessBtn);
