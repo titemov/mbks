@@ -9,6 +9,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.shape.Line;
 
+import java.util.Objects;
+
 public class Interface extends Application {
     /*
     добавить messagebox на импорт/экспорт
@@ -164,7 +166,8 @@ public class Interface extends Application {
         showMatrixBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                System.out.println(6);
+                Backend a = new Backend();
+                secondWindowStage[0] = a.showMatrix();
             }
         });
         buttonGroup.getChildren().add(showMatrixBtn);

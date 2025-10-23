@@ -4,8 +4,10 @@ import java.util.Objects;
 
 public class FileNames {
     private ArrayList<String> fileNames = new ArrayList<>();
+
     public void addFiles(String[] array){
         Collections.addAll(this.fileNames, array);
+        this.fileNames=Backend.removeArrayListDuplicates(this.fileNames);
     }
     public int size(){
         return this.fileNames.size();
@@ -13,7 +15,7 @@ public class FileNames {
     public String get(int index){
         return this.fileNames.get(index);
     }
-    public String remove(String name){
+    public String removeByName(String name){
         //String removed = get(index);
         //.remove(index) method returns object that it deleted
         for(int i=0;i<this.fileNames.size();i++){
@@ -22,6 +24,10 @@ public class FileNames {
             }
         }
         return null;
+    }
+
+    public void removeByIndex(int index){
+        this.fileNames.remove(index);
     }
 
     public String[] getAllFileNames(){

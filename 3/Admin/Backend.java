@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Backend extends Interface {
@@ -16,7 +17,7 @@ public class Backend extends Interface {
     private static final FileNames allFileNames = new FileNames();
 
     private void addButtonHandler(int mode,TextField textField, Stage newStage){
-        InFileWriter wif = new InFileWriter();
+        FileWorker fw = new FileWorker();
         String text = textField.getText();
         String temp;
 
@@ -45,7 +46,7 @@ public class Backend extends Interface {
                 matrix.addEmployee(new Employee(splitted[i],null));
             }
             //
-            wif.writeInFile(matrix);
+            fw.writeInFile(matrix);
             String[] abc = matrix.getAllNames();
             for(int i=0;i< abc.length;i++){
                 System.out.println("Name: "+abc[i]);
@@ -54,7 +55,7 @@ public class Backend extends Interface {
             String[] splitted = removeDuplicates(temp.split("(?!^)"));
             allFileNames.addFiles(splitted);
             //
-            wif.writeInFile(matrix);
+            fw.writeInFile(matrix);
             String[] abc = allFileNames.getAllFileNames();
             for(int i=0;i< abc.length;i++){
                 System.out.println("File: "+abc[i]);
@@ -63,31 +64,79 @@ public class Backend extends Interface {
     }
 
     private void removeButtonHandler(ObservableList<String> observableList,int mode, ComboBox choiceCB, Label label){
-        InFileWriter wif = new InFileWriter();
+        FileWorker fw = new FileWorker();
         System.out.println(choiceCB.getValue());
         String value = String.valueOf(choiceCB.getValue());
         if(mode==0){//mode=0 - for subjects
             try {
                 matrix.removeEmployee(value);
                 observableList.remove(value);
-                wif.writeInFile(matrix);
+                fw.writeInFile(matrix);
             }catch (Exception e){
                 System.out.println(e);
             }
             label.setText("Remove subject(s)"+"   "+value+" was removed");
         }else{
-            String temp = allFileNames.remove(value);
+            //при удалении файлов из общего списка удалять этот файл у всех юзеров
+            String temp = allFileNames.removeByName(value);
             if(Objects.isNull(temp)){
                 label.setText("Remove object(s)"+"   "+"Nothing was removed");
             }else{
                 label.setText("Remove object(s)"+"   "+value+" was removed");
                 observableList.remove(value);
             }
-            wif.writeInFile(matrix);
+            fw.writeInFile(matrix);
         }
     }
 
-    private void changeButtonHandler(TextField subjectTF, TextField objectTF){
+    private void changeButtonHandler(int mode, TextField subjectTF, TextField objectTF){
+        FileWorker fw = new FileWorker();
+        ArrayList<String> subjects = new ArrayList<>();
+        ArrayList<String> objects = new ArrayList<>();
+
+        String[] subjectsFromTF = removeDuplicates(subjectTF.getText().split(" "));
+        String[] objectsFromTF = removeDuplicates(objectTF.getText().split("(?!^)"));
+
+        //сделать проверку существования субъектов в целом
+        //сделать проверку существования файлов в целом
+        //вызвать функцию addFilesToEmployee
+
+        for(int i=0;i<matrix.matrixLength();i++){
+            for(int n=0;n<subjectsFromTF.length;n++){
+                if(Objects.equals(matrix.getEmployees().get(i).getName(), subjectsFromTF[n])){
+                    subjects.add(subjectsFromTF[n]);
+                    break;
+                }
+            }
+        }
+
+        for(int i=0;i< allFileNames.size();i++){
+            for(int n=0;n<objectsFromTF.length;n++){
+                if(Objects.equals(allFileNames.get(i), objectsFromTF[n])){
+                    objects.add(objectsFromTF[n]);
+                    break;
+                }
+            }
+        }
+        if(mode==0) {
+            for (int i = 0; i < subjects.size(); i++) {
+                int a = matrix.addFilesToEmployee(subjects.get(i), objects);
+                if (a == -1) {
+                    System.out.println("No name " + subjects.get(i));
+                }
+                fw.writeInFile(matrix);
+            }
+        }else{
+            for (int i = 0; i < subjects.size(); i++) {
+                int a = matrix.removeFilesFromEmployee(subjects.get(i), objects);
+                if (a == -1) {
+                    System.out.println("No name " + subjects.get(i));
+                }
+                fw.writeInFile(matrix);
+            }
+        }
+
+
 
     }
 
@@ -200,6 +249,16 @@ public class Backend extends Interface {
         Group group = new Group();
         newStage.setTitle("Matrix");
 
+        Label label = new Label();
+        label.setLayoutX(10);
+        label.setLayoutY(10);
+        group.getChildren().add(label);
+
+        for(int i=0;i<matrix.matrixLength();i++){
+            label.setText(label.getText()+matrix.getEmployees().get(i).getName()+" "
+                    +Arrays.toString(matrix.getEmployees().get(i).getFileNames().getAllFileNames())+"\n");
+        }
+
         // матрица - это gridpane внутри scrollpane.
         // В каждой ячейке сделать комбобокс(none,+,-) соответствующие доступам
 
@@ -215,7 +274,7 @@ public class Backend extends Interface {
         // программа меняет доступы для всех существующих перечисленных имен.
         // Если имени не существует (или файла) - игнор
         Stage newStage = new Stage();
-        newStage.setWidth(300);
+        newStage.setWidth(400);
         newStage.setHeight(100);
 
         Group group = new Group();
@@ -242,15 +301,30 @@ public class Backend extends Interface {
         objectTF.setFocusTraversable(false);
         group.getChildren().add(objectTF);
 
+        ObservableList<String> observableList = FXCollections.observableArrayList("+","-");
+        ComboBox<String> choiceCB = new ComboBox<>(observableList);
+        choiceCB.setLayoutX(210);
+        choiceCB.setLayoutY(30);
+        choiceCB.setPrefWidth(80);
+        choiceCB.setVisibleRowCount(5);
+        group.getChildren().add(choiceCB);
+
 
         Button enterBtn = new Button("Change");
-        enterBtn.setPrefSize(60,15);
-        enterBtn.setLayoutX(215);
+        enterBtn.setPrefSize(80,15);
+        enterBtn.setLayoutX(300);
         enterBtn.setLayoutY(30);
         enterBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                changeButtonHandler(subjectTF,objectTF);
+                int mode;//mode=0 - "+"; mode=1 - "-";
+                String userChoice = choiceCB.getValue();
+                if(Objects.equals(userChoice,"+")){
+                    mode=0;
+                }else{
+                    mode=1;
+                }
+                changeButtonHandler(mode,subjectTF,objectTF);
             }
         });
         group.getChildren().add(enterBtn);
@@ -288,25 +362,25 @@ public class Backend extends Interface {
         return str.split(" ");
     }
 
-//    public ArrayList removeDuplicates(ArrayList array){
-//        Collections.sort(array);
-//
-//        String current = (String) array.get(0);
-//        boolean found = false;
-//        String str="";
-//        for(int i = 0; i < array.size(); i++) {
-//            if (current == array.get(i) && !found) {
-//                found = true;
-//            } else if (current != array.get(i)) {
-//                str+=current+" ";
-//                current = (String) array.get(i);
-//                found = false;
-//            }
-//        }
-//        str+=current+" ";
-//
-//        ArrayList<String> result = new ArrayList<>();
-//        Collections.addAll(result,str.split(" "));
-//        return result;
-//    }
+    public static ArrayList removeArrayListDuplicates(ArrayList array){
+        Collections.sort(array);
+
+        String current = (String) array.get(0);
+        boolean found = false;
+        String str="";
+        for(int i = 0; i < array.size(); i++) {
+            if (current == array.get(i) && !found) {
+                found = true;
+            } else if (current != array.get(i)) {
+                str+=current+" ";
+                current = (String) array.get(i);
+                found = false;
+            }
+        }
+        str+=current+" ";
+
+        ArrayList<String> result = new ArrayList<>();
+        Collections.addAll(result,str.split(" "));
+        return result;
+    }
 }
