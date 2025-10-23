@@ -42,8 +42,33 @@ public class Backend extends Interface {
 
         if(mode==0) {//mode=0 from subject, mode=1 from object
             String[] splitted = removeDuplicates(temp.split(" "));
-            for(int i=0;i<splitted.length;i++){
-                matrix.addEmployee(new Employee(splitted[i],null));
+
+            //проверка на уже существующие субъекты
+            ArrayList<String> subjects = new ArrayList<>();
+            //System.out.println(matrix.matrixLength());
+            if(matrix.matrixLength()!=0) {
+                for (int i = 0; i < splitted.length; i++) {
+                    int k = 0;
+                    for (int n = 0; n < matrix.matrixLength(); n++) {
+                        if (Objects.equals(matrix.getEmployees().get(n).getName(), splitted[i])) {
+                            k += 1;
+                        }
+                        System.out.println("_____");
+                        System.out.println(splitted[i]);
+                        System.out.println(matrix.getEmployees().get(n).getName());
+                        System.out.println(k);
+                        System.out.println("_____");
+                    }
+                    if (k == 0) {
+                        subjects.add(splitted[i]);
+                    }
+                }
+            }else{
+                Collections.addAll(subjects,splitted);
+            }
+
+            for(int i=0;i<subjects.size();i++){
+                matrix.addEmployee(new Employee(subjects.get(i),null));
             }
             //
             fw.writeInFile(matrix);
@@ -78,6 +103,9 @@ public class Backend extends Interface {
             label.setText("Remove subject(s)"+"   "+value+" was removed");
         }else{
             //при удалении файлов из общего списка удалять этот файл у всех юзеров
+
+
+
             String temp = allFileNames.removeByName(value);
             if(Objects.isNull(temp)){
                 label.setText("Remove object(s)"+"   "+"Nothing was removed");
@@ -89,13 +117,13 @@ public class Backend extends Interface {
         }
     }
 
-    private void changeButtonHandler(int mode, TextField subjectTF, TextField objectTF){
+    private void changeButtonHandler(int mode, String subjectTF, String objectTF){
         FileWorker fw = new FileWorker();
         ArrayList<String> subjects = new ArrayList<>();
         ArrayList<String> objects = new ArrayList<>();
 
-        String[] subjectsFromTF = removeDuplicates(subjectTF.getText().split(" "));
-        String[] objectsFromTF = removeDuplicates(objectTF.getText().split("(?!^)"));
+        String[] subjectsFromTF = removeDuplicates(subjectTF.split(" "));
+        String[] objectsFromTF = removeDuplicates(objectTF.split("(?!^)"));
 
         //сделать проверку существования субъектов в целом
         //сделать проверку существования файлов в целом
@@ -118,6 +146,20 @@ public class Backend extends Interface {
                 }
             }
         }
+
+        if(subjects.size()==0 || objects.size()==0) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("No subject/object to change");
+            alert.setContentText("There is no subject/object needed to change");
+            alert.showAndWait().ifPresent(rs -> {
+                if (rs == ButtonType.OK) {
+                    System.out.println("Pressed OK.");
+                }
+            });
+            return;
+        }
+
         if(mode==0) {
             for (int i = 0; i < subjects.size(); i++) {
                 int a = matrix.addFilesToEmployee(subjects.get(i), objects);
@@ -136,8 +178,15 @@ public class Backend extends Interface {
             }
         }
 
-
-
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText("Success");
+        alert.setContentText("All changes are done.");
+        alert.showAndWait().ifPresent(rs -> {
+            if (rs == ButtonType.OK) {
+                System.out.println("Pressed OK.");
+            }
+        });
     }
 
     public Stage add(int mode){
@@ -301,7 +350,7 @@ public class Backend extends Interface {
         objectTF.setFocusTraversable(false);
         group.getChildren().add(objectTF);
 
-        ObservableList<String> observableList = FXCollections.observableArrayList("+","-");
+        ObservableList<String> observableList = FXCollections.observableArrayList("Grant","Take");
         ComboBox<String> choiceCB = new ComboBox<>(observableList);
         choiceCB.setLayoutX(210);
         choiceCB.setLayoutY(30);
@@ -317,14 +366,14 @@ public class Backend extends Interface {
         enterBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                int mode;//mode=0 - "+"; mode=1 - "-";
+                int mode;//mode=0 - "Grant"; mode=1 - "Take";
                 String userChoice = choiceCB.getValue();
-                if(Objects.equals(userChoice,"+")){
+                if(Objects.equals(userChoice,"Grant")){
                     mode=0;
                 }else{
                     mode=1;
                 }
-                changeButtonHandler(mode,subjectTF,objectTF);
+                changeButtonHandler(mode,subjectTF.getText(),objectTF.getText());
             }
         });
         group.getChildren().add(enterBtn);
@@ -369,9 +418,9 @@ public class Backend extends Interface {
         boolean found = false;
         String str="";
         for(int i = 0; i < array.size(); i++) {
-            if (current == array.get(i) && !found) {
+            if (Objects.equals(current, array.get(i)) && !found) {
                 found = true;
-            } else if (current != array.get(i)) {
+            } else if (!Objects.equals(current, array.get(i))) {
                 str+=current+" ";
                 current = (String) array.get(i);
                 found = false;
@@ -382,5 +431,23 @@ public class Backend extends Interface {
         ArrayList<String> result = new ArrayList<>();
         Collections.addAll(result,str.split(" "));
         return result;
+    }
+
+    public void initialParse(){
+        //парсить текстовый файл, заносить содержимое в объекты matrix и allFileNames
+        FileWorker fw = new FileWorker();
+        ArrayList<String> subjects = fw.parseSubjects();
+        ArrayList<String> objects = fw.parseObjects();
+
+        for(int i=0;i<subjects.size();i++){
+            matrix.addEmployee(new Employee(subjects.get(i),objects.get(i).split("(?!^)")));
+        }
+
+        String str = "";
+        for(int i=0; i<objects.size(); i++){
+            str+=objects.get(i);
+        }
+
+        allFileNames.addFiles(removeDuplicates(str.split("(?!^)")));
     }
 }

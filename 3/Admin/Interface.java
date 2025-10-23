@@ -153,6 +153,12 @@ public class Interface extends Application {
         changeAccessBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
+                try {
+                    secondWindowStage[0].close();
+                } catch (Exception e) {
+                    System.out.println("No secondary window to close (Interface.java)");
+                }
+
                 Backend a = new Backend();
                 secondWindowStage[0] = a.changeAccess();
             }
@@ -166,6 +172,12 @@ public class Interface extends Application {
         showMatrixBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
+                try {
+                    secondWindowStage[0].close();
+                } catch (Exception e) {
+                    System.out.println("No secondary window to close (Interface.java)");
+                }
+
                 Backend a = new Backend();
                 secondWindowStage[0] = a.showMatrix();
             }
@@ -235,7 +247,8 @@ public class Interface extends Application {
         });
         buttonGroup.getChildren().add(importMatrixBtn);
 
-
+        Backend init = new Backend();
+        init.initialParse();
 
         mainGroup.getChildren().add(buttonGroup);
         Scene scene = new Scene(mainGroup, Color.rgb(245,245,245));

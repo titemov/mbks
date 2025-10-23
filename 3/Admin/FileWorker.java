@@ -1,4 +1,6 @@
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class FileWorker {
@@ -35,5 +37,52 @@ public class FileWorker {
         catch(IOException e){
             System.out.println(e.getMessage());
         }
+    }
+
+    public ArrayList<String> parseSubjects(){
+        ArrayList<String> result = new ArrayList<>();
+        try(BufferedReader br = new BufferedReader(new FileReader("Matrix.txt")))
+        {
+            //чтение построчно
+            String s;
+            while((s=br.readLine())!=null){
+                result.add(s.split("-")[0]);
+                System.out.println(s);
+            }
+        }
+        catch(IOException ex){
+            System.out.println(ex.getMessage());
+            return null;
+        }
+        return result;
+    }
+
+    public ArrayList<String> parseObjects(){
+        ArrayList<String> result = new ArrayList<>();
+        try(BufferedReader br = new BufferedReader(new FileReader("Matrix.txt")))
+        {
+            //чтение построчно
+            String s;
+            while((s=br.readLine())!=null){
+                //переделать
+                String temp="";
+                try {
+                    temp = s.split("-")[1];
+                }catch (ArrayIndexOutOfBoundsException e){
+                    System.out.println(e+": this user have no file accesses.");
+                }
+                if(Objects.equals(temp,"")){
+                    result.add("");
+                }else {
+                    result.add(s.split("-")[1]);
+                }
+                System.out.println(s);
+            }
+        }
+        catch(IOException ex){
+            System.out.println(ex.getMessage());
+            return null;
+        }
+        return result;
     }
 }

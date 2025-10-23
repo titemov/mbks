@@ -6,6 +6,7 @@ public class FileNames {
     private ArrayList<String> fileNames = new ArrayList<>();
 
     public void addFiles(String[] array){
+        if(array.length==0) return;
         Collections.addAll(this.fileNames, array);
         this.fileNames=Backend.removeArrayListDuplicates(this.fileNames);
     }
