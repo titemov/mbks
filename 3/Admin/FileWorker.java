@@ -60,18 +60,29 @@ public class FileWorker {
     }
 
     public ArrayList<String> parseObjects(String path){
+        //must include ONLY english letters (no numbers and etc.) - done
         ArrayList<String> result = new ArrayList<>();
         try(BufferedReader br = new BufferedReader(new FileReader(path)))
         {
             //чтение построчно
             String s;
             while((s=br.readLine())!=null){
-                //переделать
                 String temp="";
                 try {
                     temp = s.split("-")[1];
                     System.out.println("Objects: "+temp);
                     if(Objects.equals(temp," ")) throw new ArrayIndexOutOfBoundsException("Space is not valid file name");
+                    String[] splitted = temp.split("(?!^)");
+                    ArrayList<String> tempEngOnly = new ArrayList<>();
+                    for(int i=0;i<splitted.length;i++){
+                        if((splitted[i]+splitted[i]).matches("^[a-zA-Z][a-zA-Z\\s]+$")){
+                            tempEngOnly.add(splitted[i]);
+                        }
+                    }
+                    temp="";
+                    for(int i=0; i<tempEngOnly.size();i++){
+                        temp+=tempEngOnly.get(i);
+                    }
                     result.add(temp);
                 }catch (ArrayIndexOutOfBoundsException e){
                     System.out.println(e+": this user have no file accesses.");
