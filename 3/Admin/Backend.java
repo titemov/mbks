@@ -2,9 +2,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -12,16 +17,16 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 public class Backend extends Interface {
-    //private String result="";
     private static final Matrix matrix = new Matrix();
     private static final FileNames allFileNames = new FileNames();
 
     private void addButtonHandler(int mode,TextField textField, Stage newStage){
         FileWorker fw = new FileWorker();
-        String text = textField.getText();
+        String text = textField.getText()+textField.getText();//make it longer than 1 symbol to pass "engOnly" check
         String temp;
 
         boolean engOnly = text.matches("^[a-zA-Z][a-zA-Z\\s]+$");
+        //System.out.println(engOnly); somewhy english 1 symbol cannot pass this test
 
         if(!Objects.equals(text,"") && text.length()<256 && engOnly){
             temp = textField.getText();
@@ -53,10 +58,10 @@ public class Backend extends Interface {
                         if (Objects.equals(matrix.getEmployees().get(n).getName(), splitted[i])) {
                             k += 1;
                         }
-                        System.out.println("_____");
-                        System.out.println(splitted[i]);
+                        System.out.println("_____\nComparing:");
+                        System.out.println(splitted[i]+"\nWith:");
                         System.out.println(matrix.getEmployees().get(n).getName());
-                        System.out.println(k);
+                        System.out.println("k="+k);
                         System.out.println("_____");
                     }
                     if (k == 0) {
@@ -70,17 +75,31 @@ public class Backend extends Interface {
             for(int i=0;i<subjects.size();i++){
                 matrix.addEmployee(new Employee(subjects.get(i),null));
             }
-            //
+
             fw.writeInFile(matrix);
+            //
             String[] abc = matrix.getAllNames();
             for(int i=0;i< abc.length;i++){
                 System.out.println("Name: "+abc[i]);
             }
         }else{
+            //getting rid of spaces (" ");
+            try{
+                String[] abc = temp.split(" ");
+                temp="";
+                for(int i=0;i<abc.length;i++){
+                    temp+=abc[i];
+                }
+            }catch (Exception e){
+                System.out.println("No spaces found");
+            }
+
             String[] splitted = removeDuplicates(temp.split("(?!^)"));
+
             allFileNames.addFiles(splitted);
-            //
+
             fw.writeInFile(matrix);
+            //
             String[] abc = allFileNames.getAllFileNames();
             for(int i=0;i< abc.length;i++){
                 System.out.println("File: "+abc[i]);
@@ -90,7 +109,7 @@ public class Backend extends Interface {
 
     private void removeButtonHandler(ObservableList<String> observableList,int mode, ComboBox choiceCB, Label label){
         FileWorker fw = new FileWorker();
-        System.out.println(choiceCB.getValue());
+        System.out.println("removeButtonHandler "+choiceCB.getValue());
         String value = String.valueOf(choiceCB.getValue());
         if(mode==0){//mode=0 - for subjects
             try {
@@ -104,7 +123,13 @@ public class Backend extends Interface {
         }else{
             //при удалении файлов из общего списка удалять этот файл у всех юзеров
 
-
+            for(int i=0;i<matrix.matrixLength();i++){
+                try{
+                    matrix.getEmployees().get(i).getFileNames().removeByName(value);
+                }catch (Exception e){
+                    System.out.println("User "+matrix.getEmployees().get(i).getName()+"have no file do remove");
+                }
+            }
 
             String temp = allFileNames.removeByName(value);
             if(Objects.isNull(temp)){
@@ -117,7 +142,7 @@ public class Backend extends Interface {
         }
     }
 
-    private void changeButtonHandler(int mode, String subjectTF, String objectTF){
+    private void changeButtonHandler(int mode, String subjectTF, String objectTF, boolean fromShowMatrix){
         FileWorker fw = new FileWorker();
         ArrayList<String> subjects = new ArrayList<>();
         ArrayList<String> objects = new ArrayList<>();
@@ -175,6 +200,32 @@ public class Backend extends Interface {
                     System.out.println("No name " + subjects.get(i));
                 }
                 fw.writeInFile(matrix);
+            }
+        }
+        if(!fromShowMatrix){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText("Success");
+            alert.setContentText("All changes are done.");
+            alert.showAndWait().ifPresent(rs -> {
+                if (rs == ButtonType.OK) {
+                    System.out.println("Pressed OK.");
+                }
+            });
+        }
+    }
+
+    private void saveButtonHandler(Label[] rowNames, Label[] columnNames, ComboBox[][] comboBoxes){
+        //собирает фулл инфу из измененных строк/столбцов и коллит функцию changeButtonHandler\
+        //после записи всех изменений вывести алерт, что операция прошла успешно
+        //mode=0 - "Grant"; mode=1 - "Take";
+        for(int i=0;i< comboBoxes.length;i++){
+            for(int n=0;n<comboBoxes[0].length;n++){
+                if(Objects.equals(comboBoxes[i][n].getValue(),"GIVEN")){
+                    changeButtonHandler(0,rowNames[i].getText(),columnNames[n].getText(),true);
+                }else{
+                    changeButtonHandler(1,rowNames[i].getText(),columnNames[n].getText(),true);
+                }
             }
         }
 
@@ -290,34 +341,6 @@ public class Backend extends Interface {
         return newStage;
     }
 
-    public Stage showMatrix(){
-        Stage newStage = new Stage();
-        newStage.setWidth(300);
-        newStage.setHeight(100);
-
-        Group group = new Group();
-        newStage.setTitle("Matrix");
-
-        Label label = new Label();
-        label.setLayoutX(10);
-        label.setLayoutY(10);
-        group.getChildren().add(label);
-
-        for(int i=0;i<matrix.matrixLength();i++){
-            label.setText(label.getText()+matrix.getEmployees().get(i).getName()+" "
-                    +Arrays.toString(matrix.getEmployees().get(i).getFileNames().getAllFileNames())+"\n");
-        }
-
-        // матрица - это gridpane внутри scrollpane.
-        // В каждой ячейке сделать комбобокс(none,+,-) соответствующие доступам
-
-        Scene newScene = new Scene(group, Color.rgb(245,245,245));
-        newStage.setScene(newScene);
-        newStage.setResizable(false);
-        newStage.show();
-        return newStage;
-    }
-
     public Stage changeAccess(){
         // два текстовых поля: имена и объекты, а также комбобокс, содержащий (grant,take) режимы
         // программа меняет доступы для всех существующих перечисленных имен.
@@ -356,6 +379,7 @@ public class Backend extends Interface {
         choiceCB.setLayoutY(30);
         choiceCB.setPrefWidth(80);
         choiceCB.setVisibleRowCount(5);
+        choiceCB.setValue(observableList.get(1));
         group.getChildren().add(choiceCB);
 
 
@@ -373,7 +397,7 @@ public class Backend extends Interface {
                 }else{
                     mode=1;
                 }
-                changeButtonHandler(mode,subjectTF.getText(),objectTF.getText());
+                changeButtonHandler(mode,subjectTF.getText(),objectTF.getText(),false);
             }
         });
         group.getChildren().add(enterBtn);
@@ -384,6 +408,200 @@ public class Backend extends Interface {
         newStage.show();
 
         return newStage;
+    }
+
+    public Stage showMatrix(){
+        Stage newStage = new Stage();
+        newStage.setWidth(750);
+        newStage.setHeight(550);
+
+        Group group = new Group();
+        newStage.setTitle("Matrix");
+
+        Label label = new Label();
+        label.setLayoutX(10);
+        label.setLayoutY(10);
+        group.getChildren().add(label);
+
+        for(int i=0;i<matrix.matrixLength();i++){
+            label.setText(label.getText()+matrix.getEmployees().get(i).getName()+" "
+                    +Arrays.toString(matrix.getEmployees().get(i).getFileNames().getAllFileNames())+"\n");
+        }
+
+        // матрица - это gridpane внутри scrollpane.
+        // В каждой ячейке сделать комбобокс(+,-) соответствующие доступам
+
+        GridPane gridPane = new GridPane();
+        //gridPane.getColumnConstraints().add(new ColumnConstraints(80));
+        gridPane.setGridLinesVisible(true);
+
+        Label emptyLabel = new Label(" ");
+        Label[] rowNames = new Label[matrix.matrixLength()];
+        Label[] columnNames = new Label[allFileNames.size()];
+
+        gridPane.getChildren().add(emptyLabel);
+        GridPane.setMargin(emptyLabel,new Insets(15));
+        GridPane.setConstraints(emptyLabel,0,0);
+
+        for(int i=0;i<rowNames.length;i++){
+            rowNames[i] = new Label(matrix.getEmployees().get(i).getName());
+            gridPane.getChildren().add(rowNames[i]);
+            GridPane.setConstraints(rowNames[i],0,i+1);
+            GridPane.setMargin(rowNames[i],new Insets(15));
+        }
+
+        for(int i=0;i<columnNames.length;i++){
+            columnNames[i] = new Label(allFileNames.get(i));
+            gridPane.getChildren().add(columnNames[i]);
+            GridPane.setConstraints(columnNames[i],i+1,0);
+            GridPane.setMargin(columnNames[i],new Insets(15));
+        }
+
+        ObservableList<String> observableList = FXCollections.observableArrayList("GIVEN","RESTRICTED");
+        ComboBox[][] comboBoxes = new ComboBox[matrix.matrixLength()][allFileNames.size()];
+        for(int i=0;i<comboBoxes.length;i++) {
+            for (int n = 0; n < comboBoxes[0].length; n++) {
+                comboBoxes[i][n] = new ComboBox(observableList);
+                gridPane.getChildren().add(comboBoxes[i][n]);
+                GridPane.setConstraints(comboBoxes[i][n], n + 1, i + 1);
+                GridPane.setMargin(comboBoxes[i][n], new Insets(5));
+            }
+        }
+        //переделать (костыль на костыле)
+        for(int i=0;i<comboBoxes.length;i++){
+            for(int n=0;n<comboBoxes[0].length;n++){
+                try{
+                    String file = matrix.getEmployees().get(i).getFileNames().get(n);
+                    for(int m=0;m<allFileNames.size();m++) {
+                        if (Objects.equals(file, allFileNames.get(m))) {
+                            comboBoxes[i][m].setValue(observableList.get(0));
+                            break;
+                        }
+                    }
+                }catch (IndexOutOfBoundsException e){
+                    if(!Objects.equals(comboBoxes[i][n].getValue(),"GIVEN")) {
+                        comboBoxes[i][n].setValue(observableList.get(1));
+                    }
+                }//что-то вроде finally, но не finally XDDDDD
+                if(Objects.equals(comboBoxes[i][n].getValue(),null)){
+                    comboBoxes[i][n].setValue(observableList.get(1));
+                }
+            }
+        }
+
+        ScrollPane scrollPane = new ScrollPane(gridPane);
+        scrollPane.setLayoutX(5);
+        scrollPane.setLayoutY(5);
+        scrollPane.setPrefSize(630,500);
+        scrollPane.setStyle("-fx-background: rgb(255,255,255)");
+        group.getChildren().add(scrollPane);
+
+        Button saveButton = new Button("Save");
+        saveButton.setLayoutX(645);
+        saveButton.setLayoutY(475);
+        saveButton.setPrefSize(80,20);
+        saveButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //System.out.println("SAVE");
+                saveButtonHandler(rowNames,columnNames,comboBoxes);
+            }
+        });
+        group.getChildren().add(saveButton);
+
+//        Button resetButton = new Button("Reset");
+//        resetButton.setLayoutX(645);
+//        resetButton.setLayoutY(440);
+//        resetButton.setPrefSize(80,20);
+//        resetButton.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent actionEvent) {
+//                //сохранить значения matrix и allFileNames в локальные переменные и затем подставить сохраненные значения через changeButtonHandler
+//                //после записи всех изменений вывести алерт, что операция прошла успешно
+//                //КАК СОХРАНИТЬ???????? поэтому и закомментил...
+//                System.out.println("Reset");
+//
+//            }
+//        });
+//        group.getChildren().add(resetButton);
+
+
+        Scene newScene = new Scene(group, Color.rgb(245,245,245));
+        newStage.setScene(newScene);
+        newStage.setResizable(false);
+        newStage.show();
+        return newStage;
+    }
+
+    public void consoleEnter(TextArea textArea){
+
+    }
+
+    public void exportMatrix(){
+        FileWorker fw = new FileWorker();
+        String name = fw.exportMatrix(matrix);
+        if(!Objects.equals(name,null)) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText("Success");
+            alert.setContentText("Matrix saved as " + name + ".");
+            alert.showAndWait().ifPresent(rs -> {
+                if (rs == ButtonType.OK) {
+                    System.out.println("Pressed OK.");
+                }
+            });
+        }else{
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error");
+            alert.setContentText("Unknown error occurred.");
+            alert.showAndWait().ifPresent(rs -> {
+                if (rs == ButtonType.OK) {
+                    System.out.println("Pressed OK.");
+                }
+            });
+        }
+    }
+
+    public void importMatrix(String path){
+        Backend a = new Backend();
+        FileWorker fw = new FileWorker();
+        int result = fw.importMatrix(path);
+
+        try{
+            if(result==0) {
+                if(Objects.equals(fw.parseObjects(path),null) || Objects.equals(fw.parseSubjects(path),null)){
+                    throw new Exception();
+                }
+                System.out.println(matrix.matrixLength());
+                matrix.clearEmployees();
+                System.out.println(matrix.matrixLength());
+                allFileNames.clearFileNames();
+                a.parseMatrix(path);
+                fw.writeInFile(matrix);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Success");
+                alert.setHeaderText("Success");
+                alert.setContentText("Matrix imported from " + path + ".");
+                alert.showAndWait().ifPresent(rs -> {
+                    if (rs == ButtonType.OK) {
+                        System.out.println("Pressed OK.");
+                    }
+                });
+            }else{
+                throw new Exception();
+            }
+        }catch(Exception e){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error");
+            alert.setContentText("Unknown error occurred.");
+            alert.showAndWait().ifPresent(rs -> {
+                if (rs == ButtonType.OK) {
+                    System.out.println("Pressed OK.");
+                }
+            });
+        }
     }
 
     public static int rng(int low, int high) {
@@ -433,11 +651,11 @@ public class Backend extends Interface {
         return result;
     }
 
-    public void initialParse(){
+    public void parseMatrix(String path){
         //парсить текстовый файл, заносить содержимое в объекты matrix и allFileNames
         FileWorker fw = new FileWorker();
-        ArrayList<String> subjects = fw.parseSubjects();
-        ArrayList<String> objects = fw.parseObjects();
+        ArrayList<String> subjects = fw.parseSubjects(path);
+        ArrayList<String> objects = fw.parseObjects(path);
 
         for(int i=0;i<subjects.size();i++){
             matrix.addEmployee(new Employee(subjects.get(i),objects.get(i).split("(?!^)")));

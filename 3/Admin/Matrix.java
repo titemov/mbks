@@ -24,7 +24,6 @@ public class Matrix {
 
     public int addFilesToEmployee(String name, ArrayList<String> files){
         //сравнить имя -> если совпало, то с помощью Collections.addAll(files) добавить все файлы юзеру
-        //разобраться с повторами changeAccess(da fa qw +)
         for(int i=0;i<this.employees.size();i++){
             if(Objects.equals(this.employees.get(i).getName(),name)){
                 this.employees.get(i).getFileNames().addFiles(files.toArray(new String[0]));
@@ -60,6 +59,10 @@ public class Matrix {
             result[i]=(employees.get(i)).getName();
         }
         return result;
+    }
+
+    public void clearEmployees(){
+        this.employees=new ArrayList<>();
     }
 
 }

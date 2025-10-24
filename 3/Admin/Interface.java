@@ -4,6 +4,8 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -37,6 +39,7 @@ public class Interface extends Application {
 
                 try {
                     Backend a = new Backend();
+                    //a.initialParse();
                     secondWindowStage[0] = a.add(0);//mode=0
                 }catch (Exception e){
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -68,6 +71,7 @@ public class Interface extends Application {
 
                 try {
                     Backend a = new Backend();
+                    //a.initialParse();
                     secondWindowStage[0] = a.add(1);//mode=1
                 }catch (Exception e){
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -99,6 +103,7 @@ public class Interface extends Application {
 
                 try {
                     Backend a = new Backend();
+                    //a.initialParse();
                     secondWindowStage[0] = a.remove(0);//mode=0
                 }catch (Exception e){
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -130,6 +135,7 @@ public class Interface extends Application {
 
                 try {
                     Backend a = new Backend();
+                    //a.initialParse();
                     secondWindowStage[0] = a.remove(1);//mode=1
                 }catch (Exception e){
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -160,6 +166,7 @@ public class Interface extends Application {
                 }
 
                 Backend a = new Backend();
+                //a.initialParse();
                 secondWindowStage[0] = a.changeAccess();
             }
         });
@@ -179,6 +186,7 @@ public class Interface extends Application {
                 }
 
                 Backend a = new Backend();
+                //a.initialParse();
                 secondWindowStage[0] = a.showMatrix();
             }
         });
@@ -230,10 +238,23 @@ public class Interface extends Application {
         exportMatrixBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                System.out.println(8);
+                Backend a = new Backend();
+                a.exportMatrix();
             }
         });
         buttonGroup.getChildren().add(exportMatrixBtn);
+
+        Label pathLabel = new Label("Path:");
+        pathLabel.setLayoutX(335);
+        pathLabel.setLayoutY(505);
+        mainGroup.getChildren().add(pathLabel);
+
+        TextField pathTF = new TextField();
+        pathTF.setLayoutX(365);
+        pathTF.setLayoutY(500);
+        pathTF.setPrefSize(200,20);
+        pathTF.setPromptText("Enter path here...");
+        mainGroup.getChildren().add(pathTF);
 
         Button importMatrixBtn = new Button("Import matrix from file");
         importMatrixBtn.setLayoutX(175);
@@ -242,13 +263,25 @@ public class Interface extends Application {
         importMatrixBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                System.out.println(9);
+                Backend a = new Backend();
+                a.importMatrix(pathTF.getText());
             }
         });
         buttonGroup.getChildren().add(importMatrixBtn);
 
+        Image gifImage = new Image("file:admin2.gif");//or file:doc2.gif
+        ImageView imageView = new ImageView(gifImage);
+        imageView.setLayoutX(375);
+        imageView.setLayoutY(-20);
+        mainGroup.getChildren().add(imageView);
+
+        //админская программа после перезапуска подтягивает значения в таблице
         Backend init = new Backend();
-        init.initialParse();
+        init.parseMatrix("Matrix.txt");
+        //на любое действие в программе - сначала получить данные с общей таблицы, а потом что-либо делать
+        //то же самое относится и к программе работника
+        //зачем парсить в админской программе, если работник ничего не может менять?
+        //получается, что данное замечание относится только к программе работника.
 
         mainGroup.getChildren().add(buttonGroup);
         Scene scene = new Scene(mainGroup, Color.rgb(245,245,245));

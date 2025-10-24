@@ -38,4 +38,8 @@ public class FileNames {
         }
         return allFileNames;
     }
+
+    public void clearFileNames(){
+        this.fileNames=new ArrayList<>();
+    }
 }
