@@ -38,8 +38,10 @@ public class Matrix {
             if(Objects.equals(this.employees.get(i).getName(),name)){
                 for(int n=0;n<this.employees.get(i).getFileNames().size();n++){
                     for(int m=0;m<files.size();m++){
-                        if(Objects.equals(this.employees.get(i).getFileNames().get(n),files.get(m))){
-                            this.employees.get(i).getFileNames().removeByIndex(n);
+                        if(this.employees.get(i).getFileNames().size()!=0) {
+                            if (Objects.equals(this.employees.get(i).getFileNames().get(n), files.get(m))) {
+                                this.employees.get(i).getFileNames().removeByIndex(n);
+                            }
                         }
                     }
                 }

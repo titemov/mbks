@@ -212,7 +212,11 @@ public class Interface extends Application {
         enterCommandBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                System.out.println(7);
+                Backend a = new Backend();
+                String output = a.consoleEnter(consoleTextArea);
+                consoleTextArea.setText(consoleTextArea.getText()+"\n"+output+"\n\n>>>");
+                consoleTextArea.requestFocus();
+                consoleTextArea.end();
             }
         });
         buttonGroup.getChildren().add(enterCommandBtn);
@@ -272,7 +276,7 @@ public class Interface extends Application {
         Image gifImage = new Image("file:admin2.gif");//or file:doc2.gif
         ImageView imageView = new ImageView(gifImage);
         imageView.setLayoutX(375);
-        imageView.setLayoutY(-20);
+        imageView.setLayoutY(-25);
         mainGroup.getChildren().add(imageView);
 
         //админская программа после перезапуска подтягивает значения в таблице

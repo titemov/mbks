@@ -11,7 +11,7 @@ public class FileWorker {
         int len = matrix.matrixLength();
         String[] names = new String[len];
         String[] files = new String[len];
-        //if user have no files -> he has " " file (empty file)
+        //if user have no files -> he has "" file (empty file)
         for(int i=0;i<len;i++){
             String tempString="";
             String[] employeeFiles = matrix.getEmployees().get(i).getFileNames().getAllFileNames();
@@ -20,11 +20,12 @@ public class FileWorker {
                 tempString += employeeFiles[n];
             }
 
-            if(Objects.equals(tempString,"")){
-                files[i]=" ";
-            }else {
-                files[i] = tempString;
-            }
+//            if(Objects.equals(tempString,"")){
+//                files[i]=" ";
+//            }else {
+//                files[i] = tempString;
+//            }
+            files[i]=tempString;
         }
 
         try(FileWriter writer = new FileWriter("Matrix.txt", false))
@@ -71,7 +72,7 @@ public class FileWorker {
                 try {
                     temp = s.split("-")[1];
                     System.out.println("Objects: "+temp);
-                    if(Objects.equals(temp," ")) throw new ArrayIndexOutOfBoundsException("Space is not valid file name");
+                    //if(Objects.equals(temp," ")) throw new ArrayIndexOutOfBoundsException("Space is not valid file name");
                     String[] splitted = temp.split("(?!^)");
                     ArrayList<String> tempEngOnly = new ArrayList<>();
                     for(int i=0;i<splitted.length;i++){

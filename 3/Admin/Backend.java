@@ -533,8 +533,22 @@ public class Backend extends Interface {
         return newStage;
     }
 
-    public void consoleEnter(TextArea textArea){
+    public String consoleEnter(TextArea textArea){
+        String output="";
+        try {
+            String[] temp = textArea.getText().split(">>");
+            //parsing ">>" not ">>>" to check if user gave any input.
+            System.out.println(Arrays.toString(temp));
+            String userInput = temp[temp.length - 1];
+            if(Objects.equals(userInput,">")) throw new Exception("No input");
+            System.out.println(userInput);
+            CommandLine cl = new CommandLine(userInput,matrix,allFileNames);
+            cl.chooseCommand();
+        }catch(Exception e){
+            output="Error! No input.";
+        }
 
+        return output;
     }
 
     public void exportMatrix(){
@@ -595,7 +609,7 @@ public class Backend extends Interface {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Error");
-            alert.setContentText("Unknown error occurred.");
+            alert.setContentText("Cannot read file from given path.");
             alert.showAndWait().ifPresent(rs -> {
                 if (rs == ButtonType.OK) {
                     System.out.println("Pressed OK.");
@@ -656,6 +670,8 @@ public class Backend extends Interface {
         FileWorker fw = new FileWorker();
         ArrayList<String> subjects = fw.parseSubjects(path);
         ArrayList<String> objects = fw.parseObjects(path);
+
+        if(Objects.equals(subjects,null) || Objects.equals(objects,null)) return;
 
         for(int i=0;i<subjects.size();i++){
             matrix.addEmployee(new Employee(subjects.get(i),objects.get(i).split("(?!^)")));
