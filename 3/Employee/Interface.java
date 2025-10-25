@@ -48,33 +48,33 @@ public class Interface extends Application {
         outputTextArea.end();
         mainGroup.getChildren().add(outputTextArea);
 
-        Button changeAccessBtn = new Button("Log in");
-        changeAccessBtn.setLayoutX(10+120+10+120+10);
-        changeAccessBtn.setLayoutY(10+15);
-        changeAccessBtn.setPrefSize(120,15);
-        changeAccessBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                try {
-                    Backend a = new Backend();
-                    a.importMatrix("Matrix.txt");
-                    outputTextArea.setText(a.getUserInfo(employeeNameTF.getText(),filesTF.getText()));
-
-                } catch (Exception e) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Error");
-                    alert.setContentText("Unknown error occurred.");
-                    alert.showAndWait().ifPresent(rs -> {
-                        if (rs == ButtonType.OK) {
-                            System.out.println("Pressed OK.");
+        try {
+            new Thread(new Runnable() {
+                public void run() {
+                    while(true) {
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            System.out.println("Thread error "+e);
                         }
-                    });
+                        Backend a = new Backend();
+                        a.importMatrix("Matrix.txt");
+                        outputTextArea.setText(a.getUserInfo(employeeNameTF.getText(), filesTF.getText()));
+                    }
                 }
-                System.out.println("Log in");
-            }
-        });
-        buttonGroup.getChildren().add(changeAccessBtn);
+            }).start();
+
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error");
+            alert.setContentText("Unknown error occurred.");
+            alert.showAndWait().ifPresent(rs -> {
+                if (rs == ButtonType.OK) {
+                    System.out.println("Pressed OK.");
+                }
+            });
+        }
 
 
         Image gifImage = new Image("file:user2.gif");//or file:doc2.gif
@@ -86,7 +86,7 @@ public class Interface extends Application {
         mainGroup.getChildren().addAll(buttonGroup,textFieldGroup);
         Scene scene = new Scene(mainGroup, Color.rgb(245,245,245));
         stage.setScene(scene);
-        stage.setTitle("Admin");
+        stage.setTitle("Employee");
         stage.setWidth(800);
         stage.setHeight(600);
         stage.setResizable(false);

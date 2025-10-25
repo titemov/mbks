@@ -60,7 +60,7 @@ public class FileWorker {
             //чтение строки
             String s;
             if((s=br.readLine())!=null){
-                System.out.println("read");
+                ;
             }
         }
         catch(IOException ex){
