@@ -20,17 +20,20 @@ public class Backend extends Interface {
     private static final Matrix matrix = new Matrix();
     private static final FileNames allFileNames = new FileNames();
 
-    private void addButtonHandler(int mode,TextField textField, Stage newStage){
+    public int addButtonHandler(int mode,String textField){
         FileWorker fw = new FileWorker();
-        String text = textField.getText()+textField.getText();//make it longer than 1 symbol to pass "engOnly" check
+        String text = textField;
         String temp;
+        boolean engOnly=true;
 
-        boolean engOnly = text.matches("^[a-zA-Z][a-zA-Z\\s]+$");
-        //System.out.println(engOnly); somewhy english 1 symbol cannot pass this test
+        if(mode==1) {
+            engOnly = (text+text).matches("^[a-zA-Z][a-zA-Z\\s]+$");
+            //make it longer than 1 symbol to pass "engOnly" check
+            //System.out.println(engOnly); somewhy english 1 symbol cannot pass this test
+        }
 
         if(!Objects.equals(text,"") && text.length()<256 && engOnly){
-            temp = textField.getText();
-            newStage.close();
+            temp = textField;
         }else{
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Warning");
@@ -42,7 +45,7 @@ public class Backend extends Interface {
                     System.out.println("Pressed OK.");
                 }
             });
-            return;
+            return 1;
         }
 
         if(mode==0) {//mode=0 from subject, mode=1 from object
@@ -105,6 +108,7 @@ public class Backend extends Interface {
                 System.out.println("File: "+abc[i]);
             }
         }
+        return 0;
     }
 
     private void removeButtonHandler(ObservableList<String> observableList,int mode, ComboBox choiceCB, Label label){
@@ -142,7 +146,7 @@ public class Backend extends Interface {
         }
     }
 
-    private void changeButtonHandler(int mode, String subjectTF, String objectTF, boolean fromShowMatrix){
+    public int changeButtonHandler(int mode, String subjectTF, String objectTF, boolean fromShowMatrix){
         FileWorker fw = new FileWorker();
         ArrayList<String> subjects = new ArrayList<>();
         ArrayList<String> objects = new ArrayList<>();
@@ -182,7 +186,7 @@ public class Backend extends Interface {
                     System.out.println("Pressed OK.");
                 }
             });
-            return;
+            return 1;
         }
 
         if(mode==0) {
@@ -213,6 +217,7 @@ public class Backend extends Interface {
                 }
             });
         }
+        return 0;
     }
 
     private void saveButtonHandler(Label[] rowNames, Label[] columnNames, ComboBox[][] comboBoxes){
@@ -221,7 +226,7 @@ public class Backend extends Interface {
         //mode=0 - "Grant"; mode=1 - "Take";
         for(int i=0;i< comboBoxes.length;i++){
             for(int n=0;n<comboBoxes[0].length;n++){
-                if(Objects.equals(comboBoxes[i][n].getValue(),"GIVEN")){
+                if(Objects.equals(comboBoxes[i][n].getValue(),"GRANTED")){
                     changeButtonHandler(0,rowNames[i].getText(),columnNames[n].getText(),true);
                 }else{
                     changeButtonHandler(1,rowNames[i].getText(),columnNames[n].getText(),true);
@@ -273,7 +278,8 @@ public class Backend extends Interface {
         enterBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                addButtonHandler(mode,textField,newStage);
+                addButtonHandler(mode,textField.getText());
+                newStage.close();
             }
         });
 
@@ -457,7 +463,7 @@ public class Backend extends Interface {
             GridPane.setMargin(columnNames[i],new Insets(15));
         }
 
-        ObservableList<String> observableList = FXCollections.observableArrayList("GIVEN","RESTRICTED");
+        ObservableList<String> observableList = FXCollections.observableArrayList("GRANTED","RESTRICTED");
         ComboBox[][] comboBoxes = new ComboBox[matrix.matrixLength()][allFileNames.size()];
         for(int i=0;i<comboBoxes.length;i++) {
             for (int n = 0; n < comboBoxes[0].length; n++) {
@@ -479,7 +485,7 @@ public class Backend extends Interface {
                         }
                     }
                 }catch (IndexOutOfBoundsException e){
-                    if(!Objects.equals(comboBoxes[i][n].getValue(),"GIVEN")) {
+                    if(!Objects.equals(comboBoxes[i][n].getValue(),"GRANTED")) {
                         comboBoxes[i][n].setValue(observableList.get(1));
                     }
                 }//что-то вроде finally, но не finally XDDDDD
@@ -536,14 +542,22 @@ public class Backend extends Interface {
     public String consoleEnter(TextArea textArea){
         String output="";
         try {
-            String[] temp = textArea.getText().split(">>");
-            //parsing ">>" not ">>>" to check if user gave any input.
-            System.out.println(Arrays.toString(temp));
+            String[] temp = textArea.getText().split(">>>");
+            //System.out.println(Arrays.toString(temp));
+
             String userInput = temp[temp.length - 1];
-            if(Objects.equals(userInput,">")) throw new Exception("No input");
-            System.out.println(userInput);
-            CommandLine cl = new CommandLine(userInput,matrix,allFileNames);
-            cl.chooseCommand();
+            if(temp.length==0) throw new Exception("No input");
+
+            //System.out.println("before: "+userInput);
+            try {//in case if user entered \n after entering a command
+                userInput = userInput.split("\n")[0];
+            }catch (Exception e){
+                System.out.println(e);
+            }
+            System.out.println("userInput after: "+userInput);
+
+            CommandLine cl = new CommandLine(userInput,allFileNames);
+            output=cl.chooseCommand();
         }catch(Exception e){
             output="Error! No input.";
         }

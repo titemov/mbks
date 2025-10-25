@@ -200,6 +200,7 @@ public class Interface extends Application {
         consoleTextArea.setMaxHeight(400);
         consoleTextArea.setMinWidth(650);
         consoleTextArea.setMaxWidth(650);
+        consoleTextArea.setWrapText(true);
         //consoleTextArea.requestFocus();
         consoleTextArea.setFont(Font.font("Consolas", 28));
         consoleTextArea.end();
