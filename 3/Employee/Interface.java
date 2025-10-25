@@ -4,20 +4,89 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.scene.shape.Line;
 
 public class Interface extends Application {
 
     @Override
     public void start(Stage stage){
 
-        Group group = new Group();
+        Group mainGroup = new Group();
+        Group textFieldGroup = new Group();
+        Group buttonGroup = new Group();
 
-        Scene scene = new Scene(group, Color.LIGHTGRAY);
+        TextField employeeNameTF = new TextField();
+        employeeNameTF.setLayoutX(10);
+        employeeNameTF.setLayoutY(10+15);
+        employeeNameTF.setPrefSize(120,20);
+        employeeNameTF.setPromptText("Enter name here...");
+        employeeNameTF.setFocusTraversable(false);
+        mainGroup.getChildren().add(employeeNameTF);
+
+        TextField filesTF = new TextField();
+        filesTF.setLayoutX(10+120+10);
+        filesTF.setLayoutY(10+15);
+        filesTF.setPrefSize(120,20);
+        filesTF.setPromptText("Enter files here...");
+        filesTF.setFocusTraversable(false);
+        mainGroup.getChildren().add(filesTF);
+
+        TextArea outputTextArea = new TextArea();
+        outputTextArea.setLayoutX(10);
+        outputTextArea.setLayoutY(70);
+        outputTextArea.setMinHeight(400);
+        outputTextArea.setMaxHeight(400);
+        outputTextArea.setMinWidth(765);
+        outputTextArea.setMaxWidth(765);
+        outputTextArea.setWrapText(true);
+        outputTextArea.setEditable(false);
+        outputTextArea.setFont(Font.font("Consolas", 28));
+        outputTextArea.end();
+        mainGroup.getChildren().add(outputTextArea);
+
+        Button changeAccessBtn = new Button("Log in");
+        changeAccessBtn.setLayoutX(10+120+10+120+10);
+        changeAccessBtn.setLayoutY(10+15);
+        changeAccessBtn.setPrefSize(120,15);
+        changeAccessBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    Backend a = new Backend();
+                    a.importMatrix("Matrix.txt");
+                    outputTextArea.setText(a.getUserInfo(employeeNameTF.getText(),filesTF.getText()));
+
+                } catch (Exception e) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Error");
+                    alert.setContentText("Unknown error occurred.");
+                    alert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK.");
+                        }
+                    });
+                }
+                System.out.println("Log in");
+            }
+        });
+        buttonGroup.getChildren().add(changeAccessBtn);
+
+
+        Image gifImage = new Image("file:user2.gif");//or file:doc2.gif
+        ImageView imageView = new ImageView(gifImage);
+        imageView.setLayoutX(375);
+        imageView.setLayoutY(5);
+        mainGroup.getChildren().add(imageView);
+
+        mainGroup.getChildren().addAll(buttonGroup,textFieldGroup);
+        Scene scene = new Scene(mainGroup, Color.rgb(245,245,245));
         stage.setScene(scene);
-        stage.setTitle("Employee");
+        stage.setTitle("Admin");
         stage.setWidth(800);
         stage.setHeight(600);
         stage.setResizable(false);
