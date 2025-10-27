@@ -274,6 +274,24 @@ public class Interface extends Application {
         });
         buttonGroup.getChildren().add(importMatrixBtn);
 
+        Button changeNameButton = new Button("Change name");
+        changeNameButton.setLayoutX(600);
+        changeNameButton.setLayoutY(500);
+        changeNameButton.setPrefSize(150,15);
+        changeNameButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    secondWindowStage[0].close();
+                } catch (Exception e) {
+                    System.out.println("No secondary window to close (Interface.java)");
+                }
+                Backend a = new Backend();
+                a.changeName();
+            }
+        });
+        buttonGroup.getChildren().add(changeNameButton);
+
         Image gifImage = new Image("file:admin2.gif");//or file:doc2.gif
         ImageView imageView = new ImageView(gifImage);
         imageView.setLayoutX(375);

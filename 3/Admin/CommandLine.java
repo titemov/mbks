@@ -49,6 +49,10 @@ public class CommandLine {
             if(a.addButtonHandler(0,subjects)!=0){
                 throw new Exception();
             }
+            //add objects; mode=1 - objects
+            if(a.addButtonHandler(1,objects)!=0){
+                throw new Exception();
+            }
             //mode=0 - "Grant"; mode=1 - "Take";
             if(a.changeButtonHandler(0,subjects,objects,true)==0) {
                 output = "Access to file(s) " + objects + " GRANTED to employee(s) " + subjects;

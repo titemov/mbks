@@ -18,6 +18,9 @@ public class Employee {
     public String getName(){
         return this.name;
     }
+    public void setName(String name){
+        this.name=name;
+    }
 
     public FileNames getFileNames(){
         return this.fileNames;

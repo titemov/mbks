@@ -245,6 +245,29 @@ public class Backend extends Interface {
         });
     }
 
+    private int changeNameButtonHandler(int mode, String oldName, String newName){
+        //mode=0 subject, mode=1 object
+        if(mode==0){
+            for(int i=0;i<matrix.matrixLength();i++){
+                if(Objects.equals(matrix.getEmployees().get(i).getName(),oldName)){
+                    matrix.getEmployees().get(i).setName(newName);
+                    return 0;
+                }
+            }
+        }else{
+            if(!(newName+newName).matches("^[a-zA-Z][a-zA-Z\\s]+$")){
+                return 1;
+            }
+            for(int i =0;i< allFileNames.size();i++){
+                if(Objects.equals(allFileNames.get(i),oldName)){
+                    allFileNames.set(i,newName);
+                    return 0;
+                }
+            }
+        }
+        return 1;
+    }
+
     public Stage add(int mode){
         Stage newStage = new Stage();
         newStage.setWidth(300);
@@ -630,6 +653,94 @@ public class Backend extends Interface {
                 }
             });
         }
+    }
+
+    public Stage changeName(){
+
+        Stage newStage = new Stage();
+        newStage.setWidth(400);
+        newStage.setHeight(100);
+
+        Group group = new Group();
+        newStage.setTitle("ChangeName");
+
+        Label label = new Label("Change Name:");
+        label.setLayoutX(10);
+        label.setLayoutY(10);
+        group.getChildren().add(label);
+
+        ObservableList<String> observableList = FXCollections.observableArrayList("Subject","Object");
+        ComboBox<String> choiceCB = new ComboBox<>(observableList);
+        choiceCB.setLayoutX(10);
+        choiceCB.setLayoutY(30);
+        choiceCB.setPrefWidth(90);
+        choiceCB.setVisibleRowCount(5);
+        choiceCB.setValue(observableList.get(0));
+        group.getChildren().add(choiceCB);
+
+        TextField oldNameTF = new TextField();
+        oldNameTF.setLayoutX(110);
+        oldNameTF.setLayoutY(30);
+        oldNameTF.setPromptText("Old name...");
+        oldNameTF.setPrefSize(90,20);
+        oldNameTF.setFocusTraversable(false);
+        group.getChildren().add(oldNameTF);
+
+        TextField newNameTF = new TextField();
+        newNameTF.setLayoutX(210);
+        newNameTF.setLayoutY(30);
+        newNameTF.setPromptText("New name...");
+        newNameTF.setPrefSize(90,20);
+        newNameTF.setFocusTraversable(false);
+        group.getChildren().add(newNameTF);
+
+
+        Button enterBtn = new Button("Change");
+        enterBtn.setPrefSize(65,15);
+        enterBtn.setLayoutX(310);
+        enterBtn.setLayoutY(30);
+        enterBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                int mode;//mode=0 - "Subject"; mode=1 - "Object";
+                String userChoice = choiceCB.getValue();
+                if(Objects.equals(userChoice,"Subject")){
+                    mode=0;
+                }else{
+                    mode=1;
+                }
+                //System.out.println(123);
+                if(changeNameButtonHandler(mode,oldNameTF.getText(),newNameTF.getText())!=0){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Error");
+                    alert.setContentText("Incorrect new name.");
+                    alert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK.");
+                        }
+                    });
+                }else{
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Success");
+                    alert.setHeaderText("Success");
+                    alert.setContentText("All changes are done.");
+                    alert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK.");
+                        }
+                    });
+                }
+            }
+        });
+        group.getChildren().add(enterBtn);
+
+        Scene newScene = new Scene(group, Color.rgb(245,245,245));
+        newStage.setScene(newScene);
+        newStage.setResizable(false);
+        newStage.show();
+
+        return newStage;
     }
 
     public static int rng(int low, int high) {

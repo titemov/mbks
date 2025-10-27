@@ -16,6 +16,10 @@ public class FileNames {
     public String get(int index){
         return this.fileNames.get(index);
     }
+
+    public void set(int index, String name){
+        this.fileNames.set(index,name);
+    }
     public String removeByName(String name){
         //String removed = get(index);
         //.remove(index) method returns object that it deleted
