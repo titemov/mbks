@@ -246,6 +246,16 @@ public class Backend extends Interface {
     }
 
     private int changeNameButtonHandler(int mode, String oldName, String newName){
+
+        try{
+            oldName = oldName.split(" ")[0];
+            newName = newName.split(" ")[0];
+        }catch (Exception e){
+            System.out.println("nothing to split");
+        }
+
+        System.out.println(oldName+" "+newName);
+
         //mode=0 subject, mode=1 object
         if(mode==0){
             for(int i=0;i<matrix.matrixLength();i++){
