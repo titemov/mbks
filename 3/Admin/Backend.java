@@ -246,7 +246,7 @@ public class Backend extends Interface {
     }
 
     private int changeNameButtonHandler(int mode, String oldName, String newName){
-
+        FileWorker fw = new FileWorker();
         try{
             oldName = oldName.split(" ")[0];
             newName = newName.split(" ")[0];
@@ -261,6 +261,7 @@ public class Backend extends Interface {
             for(int i=0;i<matrix.matrixLength();i++){
                 if(Objects.equals(matrix.getEmployees().get(i).getName(),oldName)){
                     matrix.getEmployees().get(i).setName(newName);
+                    fw.writeInFile(matrix);
                     return 0;
                 }
             }
@@ -271,6 +272,7 @@ public class Backend extends Interface {
             for(int i =0;i< allFileNames.size();i++){
                 if(Objects.equals(allFileNames.get(i),oldName)){
                     allFileNames.set(i,newName);
+                    fw.writeInFile(matrix);
                     return 0;
                 }
             }
