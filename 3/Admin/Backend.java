@@ -278,7 +278,15 @@ public class Backend extends Interface {
                     for(int n=0;n<allFileNames.size();n++) {
                         if (Objects.equals(allFileNames.get(n), newName)) return 1;
                     }
-                    allFileNames.set(i, newName);
+                    for(int n=0;n<matrix.matrixLength();n++){
+                        for(int m=0;m<matrix.getEmployees().get(n).getFileNames().size();m++) {
+                            if(Objects.equals(matrix.getEmployees().get(n).getFileNames().get(m),oldName)) {
+                                matrix.getEmployees().get(n).getFileNames().removeByName(oldName);
+                                matrix.getEmployees().get(n).getFileNames().addFiles(new String[]{newName});
+                            }
+                        }
+                    }
+                    allFileNames.set(i,newName);
                     fw.writeInFile(matrix);
                     return 0;
                 }
