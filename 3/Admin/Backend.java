@@ -260,6 +260,9 @@ public class Backend extends Interface {
         if(mode==0){
             for(int i=0;i<matrix.matrixLength();i++){
                 if(Objects.equals(matrix.getEmployees().get(i).getName(),oldName)){
+                    for(int n=0;n<matrix.matrixLength();n++) {
+                        if (Objects.equals(matrix.getEmployees().get(n).getName(), newName)) return 1;
+                    }
                     matrix.getEmployees().get(i).setName(newName);
                     fw.writeInFile(matrix);
                     return 0;
@@ -269,9 +272,13 @@ public class Backend extends Interface {
             if(!(newName+newName).matches("^[a-zA-Z][a-zA-Z\\s]+$")){
                 return 1;
             }
+            newName=newName.split("(?!^)")[0];
             for(int i =0;i< allFileNames.size();i++){
                 if(Objects.equals(allFileNames.get(i),oldName)){
-                    allFileNames.set(i,newName);
+                    for(int n=0;n<allFileNames.size();n++) {
+                        if (Objects.equals(allFileNames.get(n), newName)) return 1;
+                    }
+                    allFileNames.set(i, newName);
                     fw.writeInFile(matrix);
                     return 0;
                 }
