@@ -18,4 +18,13 @@ public class Folder {
     public String getPath(){
         return this.path;
     }
+    public void setPath(String path){
+        this.path=path;
+    }
+    public void setName(String name){
+        this.name=name;
+    }
+    public void setSecrecyLevel(int level){
+        this.secrecyLevel=level;
+    }
 }

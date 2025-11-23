@@ -135,8 +135,35 @@ public class Interface extends Application {
         });
         group.getChildren().add(createFolderButton);
 
-
-
+        Button changeFolderButton = new Button("Change folder");
+        changeFolderButton.setLayoutX(150);
+        changeFolderButton.setLayoutY(40);
+        changeFolderButton.setPrefSize(120,20);
+        changeFolderButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    secondWindowStage[0].close();
+                } catch (Exception e) {
+                    System.out.println("No secondary window to close (Interface.java)");
+                }
+                try {
+                    Backend b = new Backend();
+                    secondWindowStage[0] = b.changeFolder();
+                }catch (Exception e){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error!");
+                    alert.setHeaderText("Error!");
+                    alert.setContentText(String.valueOf(e));
+                    alert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK.");
+                        }
+                    });
+                }
+            }
+        });
+        group.getChildren().add(changeFolderButton);
 
         Button removeFolderButton = new Button("Remove folder");
         removeFolderButton.setLayoutX(150);
@@ -167,6 +194,96 @@ public class Interface extends Application {
             }
         });
         group.getChildren().add(removeFolderButton);
+
+        Button changeFolderLevelButton = new Button("Change folder secrecy level");
+        changeFolderLevelButton.setLayoutX(290);
+        changeFolderLevelButton.setLayoutY(10);
+        changeFolderLevelButton.setPrefSize(200,20);
+        changeFolderLevelButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    secondWindowStage[0].close();
+                } catch (Exception e) {
+                    System.out.println("No secondary window to close (Interface.java)");
+                }
+                try {
+                    Backend b = new Backend();
+                    secondWindowStage[0] = b.changeFolderLevel();
+                }catch (Exception e){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error!");
+                    alert.setHeaderText("Error!");
+                    alert.setContentText(String.valueOf(e));
+                    alert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK.");
+                        }
+                    });
+                }
+            }
+        });
+        group.getChildren().add(changeFolderLevelButton);
+
+        Button showInfoButton = new Button("Show info");
+        showInfoButton.setLayoutX(10);
+        showInfoButton.setLayoutY(100);
+        showInfoButton.setPrefSize(480,20);
+        showInfoButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    secondWindowStage[0].close();
+                } catch (Exception e) {
+                    System.out.println("No secondary window to close (Interface.java)");
+                }
+                try {
+                    Backend b = new Backend();
+                    secondWindowStage[0] = b.showInfo();
+                }catch (Exception e){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error!");
+                    alert.setHeaderText("Error!");
+                    alert.setContentText(String.valueOf(e));
+                    alert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK.");
+                        }
+                    });
+                }
+            }
+        });
+        group.getChildren().add(showInfoButton);
+
+        Button copyContentsButton = new Button("Copy");
+        copyContentsButton.setLayoutX(290);
+        copyContentsButton.setLayoutY(40);
+        copyContentsButton.setPrefSize(200,55);
+        copyContentsButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    secondWindowStage[0].close();
+                } catch (Exception e) {
+                    System.out.println("No secondary window to close (Interface.java)");
+                }
+                try {
+                    Backend b = new Backend();
+                    secondWindowStage[0] = b.copyContents();
+                }catch (Exception e){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error!");
+                    alert.setHeaderText("Error!");
+                    alert.setContentText(String.valueOf(e));
+                    alert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK.");
+                        }
+                    });
+                }
+            }
+        });
+        group.getChildren().add(copyContentsButton);
 
         Backend init = new Backend();
         init.initialParse();
