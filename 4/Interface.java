@@ -135,6 +135,39 @@ public class Interface extends Application {
         });
         group.getChildren().add(createFolderButton);
 
+
+
+
+        Button removeFolderButton = new Button("Remove folder");
+        removeFolderButton.setLayoutX(150);
+        removeFolderButton.setLayoutY(70);
+        removeFolderButton.setPrefSize(120,20);
+        removeFolderButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    secondWindowStage[0].close();
+                } catch (Exception e) {
+                    System.out.println("No secondary window to close (Interface.java)");
+                }
+                try {
+                    Backend b = new Backend();
+                    secondWindowStage[0] = b.removeFolder();
+                }catch (Exception e){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error!");
+                    alert.setHeaderText("Error!");
+                    alert.setContentText(String.valueOf(e));
+                    alert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK.");
+                        }
+                    });
+                }
+            }
+        });
+        group.getChildren().add(removeFolderButton);
+
         Backend init = new Backend();
         init.initialParse();
 

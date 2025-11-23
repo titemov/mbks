@@ -86,11 +86,10 @@ public class Backend extends Interface{
             for(int i=0;i<secrecies.size();i++){
                 if(Objects.equals(secrecies.get(i).getName(),value)){
                     int secrecyLevel = secrecies.get(i).getLevel();
-                    ArrayList<Integer> ids = new ArrayList<>();
                     secrecies.remove(i);
                     for(int n=folders.size()-1;n>=0;n--){
                         if(Objects.equals(folders.get(n).getSecrecyLevel(),secrecyLevel)){
-                            //remove folder from OS
+                            removeFolderHandler(folders.get(n).getName(),folders.get(n).getPath());
                             folders.remove(n);
                         }
                     }
@@ -102,8 +101,9 @@ public class Backend extends Interface{
             for(int i=0;i<secrecies.size();i++){
                 if(Objects.equals(secrecies.get(i).getLevel(),Integer.parseInt(value))){
                     secrecies.remove(i);
-                    for(int n=0;n<folders.size();n++){
+                    for(int n=folders.size()-1;n>=0;n--){
                         if(folders.get(n).getSecrecyLevel()==Integer.parseInt(value)){
+                            removeFolderHandler(folders.get(n).getName(),folders.get(n).getPath());
                             folders.remove(n);
                         }
                     }
@@ -127,6 +127,24 @@ public class Backend extends Interface{
             fw.writeFolder(folders);
         } else {
             System.out.println("Failed to create folder or folder already exists at: " + folderPath);
+        }
+    }
+
+    private void removeFolderHandler(String name,String path){
+        FileWorker fw = new FileWorker();
+        String folderPath = path+name;
+        File folder = new File(folderPath);
+
+        if (folder.delete()) {
+            System.out.println("Folder removed successfully at: " + folderPath);
+            for(int i=0;i<folders.size();i++){
+                if(Objects.equals(name,folders.get(i).getName()) && Objects.equals(path,folders.get(i).getPath())){
+                    folders.remove(i);
+                }
+            }
+            fw.writeFolder(folders);
+        } else {
+            System.out.println("Failed to remove folder or folder already removed at: " + folderPath);
         }
     }
 
@@ -381,7 +399,7 @@ public class Backend extends Interface{
                         path=pathTF.getText();
                     }
 
-                    int minLevel= (int) (Math.pow(2,32)-1);
+                    int minLevel= (int) (Math.pow(2,31)-1);
 
                     for(int i=0;i<secrecies.size();i++){
                         System.out.println(secrecies.get(i).getLevel());
@@ -390,9 +408,76 @@ public class Backend extends Interface{
                         }
                     }
 
-                    if(minLevel==(int) (Math.pow(2,32)-1)) throw new Exception("No secrecy levels");
+                    if(minLevel==(int) (Math.pow(2,31)-1)) throw new Exception("No secrecy levels");
 
                     createFolderHandler(nameTF.getText(),minLevel,path);
+                }catch (Exception e){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error!");
+                    alert.setHeaderText("Error!");
+                    alert.setContentText(String.valueOf(e));
+                    alert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK.");
+                        }
+                    });
+                }
+            }
+        });
+        group.getChildren().add(enterButton);
+
+        Scene newScene = new Scene(group, Color.rgb(245,245,245));
+        newStage.setScene(newScene);
+        newStage.setResizable(false);
+        newStage.show();
+
+        return newStage;
+    }
+
+    public Stage removeFolder(){
+        Stage newStage = new Stage();
+        newStage.setWidth(300);
+        newStage.setHeight(100);
+
+        Group group = new Group();
+        newStage.setTitle("RemoveFolder");
+
+        Label label = new Label("Remove folder:   (please use \" \\\\\" in path)");
+        label.setLayoutX(10);
+        label.setLayoutY(5);
+        group.getChildren().add(label);
+
+        TextField pathTF = new TextField();
+        pathTF.setLayoutX(10);
+        pathTF.setLayoutY(30);
+        pathTF.setPromptText("Path...");
+        pathTF.setPrefSize(90,20);
+        pathTF.setFocusTraversable(false);
+        group.getChildren().add(pathTF);
+
+        TextField nameTF = new TextField();
+        nameTF.setLayoutX(110);
+        nameTF.setLayoutY(30);
+        nameTF.setPromptText("Name...");
+        nameTF.setPrefSize(90,20);
+        nameTF.setFocusTraversable(false);
+        group.getChildren().add(nameTF);
+
+        Button enterButton = new Button("Remove");
+        enterButton.setLayoutX(210);
+        enterButton.setLayoutY(30);
+        enterButton.setPrefSize(60,20);
+        enterButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    String path;
+                    if(Objects.equals(pathTF.getText(),null) || Objects.equals(pathTF.getText(),"")){
+                        path=".\\\\";
+                    }else{
+                        path=pathTF.getText();
+                    }
+                    removeFolderHandler(nameTF.getText(),path);
                 }catch (Exception e){
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error!");
