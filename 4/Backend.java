@@ -1,0 +1,442 @@
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+
+import java.io.File;
+import java.util.*;
+
+public class Backend extends Interface{
+
+    private static ArrayList<Secrecy> secrecies = new ArrayList<>();
+    private static ArrayList<Folder> folders = new ArrayList<>();
+
+    private void createSecrecyHandler(String name, int level){
+        FileWorker fw = new FileWorker();
+
+        if(level<0) level=0;
+
+        boolean isExist=false;
+
+        for(int i = 0; i< secrecies.size(); i++){
+            if(Objects.equals(secrecies.get(i).getName(),name) || Objects.equals(secrecies.get(i).getLevel(),level)){
+                isExist=true;
+                System.out.println("One of the subjects already exists!");
+            }
+        }
+
+        if(!isExist){
+            secrecies.add(new Secrecy(name,level));
+            fw.writeSecrecy(secrecies);
+        }
+
+        for(int i = 0; i< secrecies.size(); i++){
+            System.out.println(secrecies.get(i).getName()+" "+ secrecies.get(i).getLevel());
+        }
+        System.out.println("=========================");
+    }
+
+    private void changeSecrecyHandler(int mode, String oldName, String newName){
+        //mode==0 names; mode==1 levels;
+        FileWorker fw = new FileWorker();
+        try{
+            oldName = oldName.split(" ")[0];
+            newName = newName.split(" ")[0];
+        }catch (Exception e){
+            System.out.println("Nothing to split.");
+        }
+
+        System.out.println("oldname: "+oldName+"; newname: "+newName);
+
+        if(mode==0){
+            for(int i=0;i<secrecies.size();i++){
+                if(Objects.equals(secrecies.get(i).getName(),oldName)){
+                    secrecies.get(i).setName(newName);
+                    fw.writeSecrecy(secrecies);
+                }
+            }
+        }else{
+            for(int i=0;i<secrecies.size();i++){
+                if(Objects.equals(secrecies.get(i).getLevel(),Integer.parseInt(oldName))){
+                    secrecies.get(i).setLevel(Integer.parseInt(newName));
+                    fw.writeSecrecy(secrecies);
+                }
+            }
+        }
+        //if level changed, change it in folders.txt
+    }
+
+    private void removeSecrecyHandler(int mode, String value){
+        //mode==0 names; mode==1 levels;
+        FileWorker fw = new FileWorker();
+        try{
+            value = value.split(" ")[0];
+        }catch (Exception e){
+            System.out.println("Nothing to split.");
+        }
+
+        System.out.println("value: "+value+"; mode: "+mode);
+
+        if(mode==0){
+            for(int i=0;i<secrecies.size();i++){
+                if(Objects.equals(secrecies.get(i).getName(),value)){
+                    int secrecyLevel = secrecies.get(i).getLevel();
+                    ArrayList<Integer> ids = new ArrayList<>();
+                    secrecies.remove(i);
+                    for(int n=folders.size()-1;n>=0;n--){
+                        if(Objects.equals(folders.get(n).getSecrecyLevel(),secrecyLevel)){
+                            //remove folder from OS
+                            folders.remove(n);
+                        }
+                    }
+                    fw.writeFolder(folders);
+                    fw.writeSecrecy(secrecies);
+                }
+            }
+        }else{
+            for(int i=0;i<secrecies.size();i++){
+                if(Objects.equals(secrecies.get(i).getLevel(),Integer.parseInt(value))){
+                    secrecies.remove(i);
+                    for(int n=0;n<folders.size();n++){
+                        if(folders.get(n).getSecrecyLevel()==Integer.parseInt(value)){
+                            folders.remove(n);
+                        }
+                    }
+                    fw.writeFolder(folders);
+                    fw.writeSecrecy(secrecies);
+                }
+            }
+        }
+        //if level removed, remove all folders with this level
+    }
+
+    private void createFolderHandler(String name,int secrecyLevel,String path){
+        FileWorker fw = new FileWorker();
+
+        String folderPath = path+name;
+        File folder = new File(folderPath);
+
+        if (folder.mkdirs()) {
+            System.out.println("Folder created successfully at: " + folderPath);
+            folders.add(new Folder(name,secrecyLevel,path));
+            fw.writeFolder(folders);
+        } else {
+            System.out.println("Failed to create folder or folder already exists at: " + folderPath);
+        }
+    }
+
+    public Stage createSecrecy(){
+        Stage newStage = new Stage();
+        newStage.setWidth(300);
+        newStage.setHeight(100);
+
+        Group group = new Group();
+        newStage.setTitle("CreateSecrecy");
+
+        Label label = new Label("Create secrecy:");
+        label.setLayoutX(10);
+        label.setLayoutY(5);
+        group.getChildren().add(label);
+
+        TextField nameTF = new TextField();
+        nameTF.setLayoutX(10);
+        nameTF.setLayoutY(30);
+        nameTF.setPromptText("Name...");
+        nameTF.setPrefSize(90,20);
+        nameTF.setFocusTraversable(false);
+        group.getChildren().add(nameTF);
+
+        TextField levelTF = new TextField();
+        levelTF.setLayoutX(110);
+        levelTF.setLayoutY(30);
+        levelTF.setPromptText("Level...");
+        levelTF.setPrefSize(90,20);
+        levelTF.setFocusTraversable(false);
+        group.getChildren().add(levelTF);
+
+        Button enterButton = new Button("Enter");
+        enterButton.setLayoutX(210);
+        enterButton.setLayoutY(30);
+        enterButton.setPrefSize(60,20);
+        enterButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    createSecrecyHandler(nameTF.getText(), Integer.parseInt(levelTF.getText()));
+                }catch (Exception e){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error!");
+                    alert.setHeaderText("Error!");
+                    alert.setContentText(String.valueOf(e));
+                    alert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK.");
+                        }
+                    });
+                }
+            }
+        });
+        group.getChildren().add(enterButton);
+
+        Scene newScene = new Scene(group, Color.rgb(245,245,245));
+        newStage.setScene(newScene);
+        newStage.setResizable(false);
+        newStage.show();
+
+        return newStage;
+    }
+
+    public Stage changeSecrecy(){
+        Stage newStage = new Stage();
+        newStage.setWidth(400);
+        newStage.setHeight(100);
+
+        Group group = new Group();
+        newStage.setTitle("ChangeSecrecy");
+
+        Label label = new Label("Change secrecy values:");
+        label.setLayoutX(10);
+        label.setLayoutY(5);
+        group.getChildren().add(label);
+
+        ObservableList<String> observableList = FXCollections.observableArrayList("Name","Level");
+        ComboBox<String> choiceCB = new ComboBox<>(observableList);
+        choiceCB.setLayoutX(10);
+        choiceCB.setLayoutY(30);
+        choiceCB.setPrefWidth(90);
+        choiceCB.setVisibleRowCount(5);
+        choiceCB.setValue(observableList.get(0));
+        group.getChildren().add(choiceCB);
+
+        TextField oldNameTF = new TextField();
+        oldNameTF.setLayoutX(110);
+        oldNameTF.setLayoutY(30);
+        oldNameTF.setPromptText("Old value...");
+        oldNameTF.setPrefSize(90,20);
+        oldNameTF.setFocusTraversable(false);
+        group.getChildren().add(oldNameTF);
+
+        TextField newNameTF = new TextField();
+        newNameTF.setLayoutX(210);
+        newNameTF.setLayoutY(30);
+        newNameTF.setPromptText("New value...");
+        newNameTF.setPrefSize(90,20);
+        newNameTF.setFocusTraversable(false);
+        group.getChildren().add(newNameTF);
+
+        Button enterButton = new Button("Change");
+        enterButton.setLayoutX(310);
+        enterButton.setLayoutY(30);
+        enterButton.setPrefSize(60,20);
+        enterButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    int mode;
+                    String userChoice = choiceCB.getValue();
+                    if(Objects.equals(userChoice,"Name")){
+                        mode=0;
+                    }else{
+                        mode=1;
+                    }
+                    changeSecrecyHandler(mode,oldNameTF.getText(),newNameTF.getText());
+                }catch (Exception e){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error!");
+                    alert.setHeaderText("Error!");
+                    alert.setContentText(String.valueOf(e));
+                    alert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK.");
+                        }
+                    });
+                }
+            }
+        });
+        group.getChildren().add(enterButton);
+
+        Scene newScene = new Scene(group, Color.rgb(245,245,245));
+        newStage.setScene(newScene);
+        newStage.setResizable(false);
+        newStage.show();
+
+        return newStage;
+    }
+
+    public Stage removeSecrecy(){
+        Stage newStage = new Stage();
+        newStage.setWidth(300);
+        newStage.setHeight(100);
+
+        Group group = new Group();
+        newStage.setTitle("RemoveSecrecy");
+
+        Label label = new Label("Remove secrecy by value:");
+        label.setLayoutX(10);
+        label.setLayoutY(5);
+        group.getChildren().add(label);
+
+        ObservableList<String> observableList = FXCollections.observableArrayList("Name","Level");
+        ComboBox<String> choiceCB = new ComboBox<>(observableList);
+        choiceCB.setLayoutX(10);
+        choiceCB.setLayoutY(30);
+        choiceCB.setPrefWidth(90);
+        choiceCB.setVisibleRowCount(5);
+        choiceCB.setValue(observableList.get(0));
+        group.getChildren().add(choiceCB);
+
+        TextField valueTF = new TextField();
+        valueTF.setLayoutX(110);
+        valueTF.setLayoutY(30);
+        valueTF.setPromptText("Value...");
+        valueTF.setPrefSize(90,20);
+        valueTF.setFocusTraversable(false);
+        group.getChildren().add(valueTF);
+
+        Button enterButton = new Button("Remove");
+        enterButton.setLayoutX(210);
+        enterButton.setLayoutY(30);
+        enterButton.setPrefSize(60,20);
+        enterButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    int mode;
+                    String userChoice = choiceCB.getValue();
+                    if(Objects.equals(userChoice,"Name")){
+                        mode=0;
+                    }else{
+                        mode=1;
+                    }
+                    removeSecrecyHandler(mode,valueTF.getText());
+                }catch (Exception e){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error!");
+                    alert.setHeaderText("Error!");
+                    alert.setContentText(String.valueOf(e));
+                    alert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK.");
+                        }
+                    });
+                }
+            }
+        });
+        group.getChildren().add(enterButton);
+
+        Scene newScene = new Scene(group, Color.rgb(245,245,245));
+        newStage.setScene(newScene);
+        newStage.setResizable(false);
+        newStage.show();
+
+        return newStage;
+    }
+
+    public Stage createFolder(){
+        Stage newStage = new Stage();
+        newStage.setWidth(300);
+        newStage.setHeight(100);
+
+        Group group = new Group();
+        newStage.setTitle("CreateFolder");
+
+        Label label = new Label("Create folder:   (please use \" \\\\\" in path)");
+        label.setLayoutX(10);
+        label.setLayoutY(5);
+        group.getChildren().add(label);
+
+        TextField nameTF = new TextField();
+        nameTF.setLayoutX(10);
+        nameTF.setLayoutY(30);
+        nameTF.setPromptText("Name...");
+        nameTF.setPrefSize(90,20);
+        nameTF.setFocusTraversable(false);
+        group.getChildren().add(nameTF);
+
+        TextField pathTF = new TextField();
+        pathTF.setLayoutX(110);
+        pathTF.setLayoutY(30);
+        pathTF.setPromptText("Path...");
+        pathTF.setPrefSize(90,20);
+        pathTF.setFocusTraversable(false);
+        group.getChildren().add(pathTF);
+
+        Button enterButton = new Button("Create");
+        enterButton.setLayoutX(210);
+        enterButton.setLayoutY(30);
+        enterButton.setPrefSize(60,20);
+        enterButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    String path;
+                    if(Objects.equals(pathTF.getText(),null) || Objects.equals(pathTF.getText(),"")){
+                        path=".\\\\";
+                    }else{
+                        path=pathTF.getText();
+                    }
+
+                    int minLevel= (int) (Math.pow(2,32)-1);
+
+                    for(int i=0;i<secrecies.size();i++){
+                        System.out.println(secrecies.get(i).getLevel());
+                        if(secrecies.get(i).getLevel()<=minLevel){
+                            minLevel=secrecies.get(i).getLevel();
+                        }
+                    }
+
+                    if(minLevel==(int) (Math.pow(2,32)-1)) throw new Exception("No secrecy levels");
+
+                    createFolderHandler(nameTF.getText(),minLevel,path);
+                }catch (Exception e){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error!");
+                    alert.setHeaderText("Error!");
+                    alert.setContentText(String.valueOf(e));
+                    alert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK.");
+                        }
+                    });
+                }
+            }
+        });
+        group.getChildren().add(enterButton);
+
+        Scene newScene = new Scene(group, Color.rgb(245,245,245));
+        newStage.setScene(newScene);
+        newStage.setResizable(false);
+        newStage.show();
+
+        return newStage;
+    }
+
+    public void initialParse(){
+        FileWorker fw = new FileWorker();
+        ArrayList<Secrecy> temp1 = fw.parseSecrecies("secrecies.txt");
+        ArrayList<Folder> temp2 = fw.parseFolders("folders.txt");
+
+        if(Objects.equals(temp1,null)) return;
+
+        for(int i=0;i<temp1.size();i++){
+            secrecies.add(new Secrecy(temp1.get(i).getName(),temp1.get(i).getLevel()));
+        }
+
+        if(Objects.equals(temp2,null)) return;
+
+        for(int i=0;i< temp2.size();i++){
+            folders.add(new Folder(temp2.get(i).getName(),temp2.get(i).getSecrecyLevel(),temp2.get(i).getPath()));
+        }
+    }
+
+    public static int rng(int low, int high) {
+        Random r = new Random();
+        return r.nextInt(high - low) + low;
+    }
+
+}
