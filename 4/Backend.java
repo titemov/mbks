@@ -888,7 +888,7 @@ public class Backend extends Interface{
         newStage.setHeight(100);
 
         Group group = new Group();
-        newStage.setTitle("ChangeFolderLevel");
+        newStage.setTitle("CopyContents");
 
         Label label = new Label("Copy folder content:   (please use \" \\\" in path)");
         label.setLayoutX(10);
@@ -900,8 +900,6 @@ public class Backend extends Interface{
             levels.add(secrecies.get(i).getLevel());
         }
 
-        ObservableList<String> suitableFolders = FXCollections.observableArrayList();
-
         ObservableList<Integer> observableLevelList = FXCollections.observableArrayList(levels);
         ComboBox<Integer> levelChoiceCB = new ComboBox<>(observableLevelList);
         levelChoiceCB.setLayoutX(10);
@@ -910,49 +908,100 @@ public class Backend extends Interface{
         levelChoiceCB.setVisibleRowCount(5);
         levelChoiceCB.setValue(observableLevelList.get(0));
 
-        ComboBox<String> folderChoiceCB = new ComboBox<>(suitableFolders);
-        folderChoiceCB.setLayoutX(110);
-        folderChoiceCB.setLayoutY(30);
-        folderChoiceCB.setPrefWidth(90);
-        folderChoiceCB.setVisibleRowCount(5);
-        group.getChildren().add(folderChoiceCB);
+        ObservableList<String> suitableSourceFolders = FXCollections.observableArrayList();
+
+        ComboBox<String> sourceFolderChoiceCB = new ComboBox<>(suitableSourceFolders);
+        sourceFolderChoiceCB.setLayoutX(110);
+        sourceFolderChoiceCB.setLayoutY(30);
+        sourceFolderChoiceCB.setPrefWidth(90);
+        sourceFolderChoiceCB.setVisibleRowCount(5);
+        group.getChildren().add(sourceFolderChoiceCB);
 
         // Метод для обновления списка папок
-        Runnable updateFolders = () -> {
-            suitableFolders.clear();
+        Runnable updateSourceFolders = () -> {
+            suitableSourceFolders.clear();
             Integer selectedLevel = levelChoiceCB.getValue();
             if (selectedLevel != null) {
                 for(int i=0;i<folders.size();i++){
                     if(folders.get(i).getSecrecyLevel() == selectedLevel){
-                        suitableFolders.add(folders.get(i).getPath() + folders.get(i).getName());
+                        suitableSourceFolders.add(folders.get(i).getPath() + folders.get(i).getName());
                     }
                 }
             }
             // Устанавливаем первое значение если список не пуст
-            if (!suitableFolders.isEmpty()) {
-                folderChoiceCB.setValue(suitableFolders.get(0));
+            if (!suitableSourceFolders.isEmpty()) {
+                sourceFolderChoiceCB.setValue(suitableSourceFolders.get(0));
+            }
+        };
+
+        ObservableList<String> suitableTargetFolders = FXCollections.observableArrayList();
+
+        ComboBox<String> targetFolderChoiceCB = new ComboBox<>(suitableTargetFolders);
+        targetFolderChoiceCB.setLayoutX(210);
+        targetFolderChoiceCB.setLayoutY(30);
+        targetFolderChoiceCB.setPrefWidth(90);
+        targetFolderChoiceCB.setVisibleRowCount(5);
+        group.getChildren().add(targetFolderChoiceCB);
+
+        // Метод для обновления списка папок
+        Runnable updateTargetFolders = () -> {
+            try {
+                suitableTargetFolders.clear();
+                Integer selectedLevel = levelChoiceCB.getValue();
+                String tempPath;
+
+                ArrayList<String> a = new ArrayList<>();
+
+                for (int i = 0; i < folders.size(); i++) {
+                    tempPath = folders.get(i).getPath() + folders.get(i).getName();
+                    System.out.println("tempPath"+tempPath);
+                    if ((folders.get(i).getSecrecyLevel() <= selectedLevel)) {
+                        for(int n=0;n<a.size();n++){
+                            System.out.println("AAAAA "+a.get(n));
+                            if(tempPath.contains(a.get(n))){
+                                System.out.println(tempPath);
+                                break;
+                            }else{
+                                suitableTargetFolders.add(tempPath);
+                                break;
+                            }
+                        }
+                        if(a.size()==0){
+                            suitableTargetFolders.add(tempPath);
+                        }
+                    }else{
+                        a.add(tempPath);
+                        System.out.println("added "+tempPath);
+                    }
+                }
+                // Устанавливаем первое значение если список не пуст
+                if (!suitableTargetFolders.isEmpty()) {
+                    targetFolderChoiceCB.setValue(suitableTargetFolders.get(0));
+                }
+            }catch (Exception e){
+                System.out.println(e);
             }
         };
 
         // Инициализируем список папок при старте
-        updateFolders.run();
+        updateSourceFolders.run();
+        updateTargetFolders.run();
 
         // Обработчик изменения выбора уровня
         levelChoiceCB.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                updateFolders.run();
+                updateSourceFolders.run();
             }
         });
         group.getChildren().add(levelChoiceCB);
 
-        TextField pathTF = new TextField();
-        pathTF.setLayoutX(210);
-        pathTF.setLayoutY(30);
-        pathTF.setPromptText("Path...");
-        pathTF.setPrefSize(90,20);
-        pathTF.setFocusTraversable(false);
-        group.getChildren().add(pathTF);
+        sourceFolderChoiceCB.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                updateTargetFolders.run();
+            }
+        });
 
         Button enterButton = new Button("Copy");
         enterButton.setLayoutX(310);
@@ -963,12 +1012,13 @@ public class Backend extends Interface{
             public void handle(ActionEvent actionEvent) {
                 try {
                     String path;
-                    if(Objects.equals(pathTF.getText(),null) || Objects.equals(pathTF.getText(),"")){
+                    System.out.println(targetFolderChoiceCB.getValue());
+                    if(Objects.equals(targetFolderChoiceCB.getValue(),null) || Objects.equals(targetFolderChoiceCB.getValue(),"")){
                         throw new Exception();
                     }else{
-                        path=pathTF.getText();
+                        path=targetFolderChoiceCB.getValue();
                     }
-                    copyContentsHandler(levelChoiceCB.getValue(),folderChoiceCB.getValue(),path);
+                    copyContentsHandler(levelChoiceCB.getValue(),sourceFolderChoiceCB.getValue(),targetFolderChoiceCB.getValue());
                 }catch (Exception e){
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error!");
