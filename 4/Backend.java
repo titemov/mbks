@@ -168,6 +168,9 @@ public class Backend extends Interface{
 
     private void changeFolderHandler(String oldName,String newName,String path){
         FileWorker fw = new FileWorker();
+
+        if(!path.endsWith("\\")) path+="\\";
+
         File oldDir = new File(path+oldName);
         File newDir = new File(path+newName);
 
@@ -183,7 +186,6 @@ public class Backend extends Interface{
             for(int i=0;i<folders.size();i++){
                 if(Objects.equals(folders.get(i).getName(),oldName) && Objects.equals(folders.get(i).getPath(),path)){
                     folders.get(i).setName(newName);
-                    break;
                 }
             }
             fw.writeFolder(folders);
