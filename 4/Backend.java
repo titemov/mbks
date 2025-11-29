@@ -9,12 +9,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.*;
 import java.util.*;
-import java.util.regex.Pattern;
 
 public class Backend extends Interface{
 
@@ -955,7 +951,7 @@ public class Backend extends Interface{
                 for (int i = 0; i < folders.size(); i++) {
                     tempPath = folders.get(i).getPath() + folders.get(i).getName();
                     System.out.println("tempPath"+tempPath);
-                    if ((folders.get(i).getSecrecyLevel() <= selectedLevel)) {
+                    if ((folders.get(i).getSecrecyLevel() >= selectedLevel)) {
                         for(int n=0;n<a.size();n++){
                             System.out.println("AAAAA "+a.get(n));
                             if(tempPath.contains(a.get(n))){
